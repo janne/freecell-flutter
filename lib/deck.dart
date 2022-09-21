@@ -7,8 +7,14 @@ class Deck {
   Deck(this.cards);
 
   factory Deck.full() {
-    return Deck(
-        Suit.values.map((suit) => List.generate(13, (rank) => Rank(rank + 1)).map((rank) => Card(rank: rank, suit: suit))).expand((v) => v).toList());
+    return Deck(List.generate(13, (rank) => Rank(rank + 1))
+        .map(
+          (rank) => Suit.values.map(
+            (suit) => Card(rank: rank, suit: suit),
+          ),
+        )
+        .expand((v) => v)
+        .toList());
   }
 
   Deck shuffle(int seed) {
