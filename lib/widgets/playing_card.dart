@@ -18,7 +18,10 @@ class PlayingCard extends StatelessWidget {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: const BorderSide(color: Colors.black)),
             child: Padding(
               padding: const EdgeInsets.all(2),
-              child: Text(card.toString()),
+              child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Expanded(child: Text(card.rank)),
+                Text(card.suit),
+              ]),
             ),
           )),
     );
