@@ -33,11 +33,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final board = Board(1);
+  var board = Board.withSeed(1);
 
-  void _draw() {
+  void _onTap(fc.Card card) {
     setState(() {
-      // _deck.cards.removeAt(0);
+      final tableau = board.tableau.map((stack) => stack.where((c) => c != card).toList()).toList();
+      final homeCells = board.homeCells.map((stack) => stack.where((c) => c != card).toList()).toList();
+      final freeCells = board.freeCells.map((c) => c == card ? null : c).toList();
+      board = board.copyWith(tableau: tableau, freeCells: freeCells, homeCells: homeCells);
     });
   }
 
@@ -49,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Row(
         children: board.tableau
             .map(
-              (cards) => Expanded(child: CardStack(cards: cards)),
+              (cards) => Expanded(child: CardStack(cards: cards, onTap: _onTap)),
             )
             .toList(),
       ),
