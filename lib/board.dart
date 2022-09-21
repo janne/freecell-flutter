@@ -20,7 +20,7 @@ class Board {
     for (final entry in Deck.shuffled(seed).cards.asMap().entries) {
       tableau[entry.key % 8].add(entry.value);
     }
-    final homeCells = List.generate(8, (_) => <Card>[]);
+    final homeCells = List.generate(4, (_) => <Card>[]);
     return Board(seed: seed, freeCells: freeCells, tableau: tableau, homeCells: homeCells);
   }
 
