@@ -1,10 +1,13 @@
+import 'package:flutter/foundation.dart';
+
 enum Suit { clubs, diamonds, hearts, spades }
 
+@immutable
 class Card {
   final int _rank;
   final Suit _suit;
 
-  Card(this._rank, this._suit);
+  const Card(this._rank, this._suit);
 
   String get suit {
     switch (_suit) {

@@ -1,9 +1,10 @@
+import 'package:flutter/foundation.dart';
+import 'package:freecell/card.dart';
 import 'package:freecell/deck.dart';
 
-import 'card.dart';
-
+@immutable
 class Board {
-  int seed;
+  final int seed;
   final List<Card?> freeCells = List.generate(4, (_) => null);
   final homeCells = List.generate(8, (_) => <Card>[]);
   late final List<List<Card>> tableau;

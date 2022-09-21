@@ -1,10 +1,12 @@
+import 'package:flutter/widgets.dart';
 import 'package:freecell/card.dart';
 import 'package:freecell/generator.dart';
 
+@immutable
 class Deck {
   final List<Card> cards;
 
-  Deck(this.cards);
+  const Deck(this.cards);
 
   factory Deck.full() {
     return Deck(List.generate(13, (i) => i + 1)

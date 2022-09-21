@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:freecell/board.dart';
-import 'package:freecell/card.dart' as Freecell;
-import 'package:freecell/deck.dart';
+import 'package:freecell/card.dart' as fc;
+import 'package:freecell/widgets/card_stack.dart';
+import 'package:freecell/widgets/playing_card.dart';
 
 void main() {
   runApp(const MyApp());
@@ -43,17 +44,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.green,
       appBar: AppBar(title: Text(widget.title)),
-      body: Center(
-        child: Row(
-          children: board.tableau
-              .map(
-                (col) => Column(
-                  children: col.map((card) => Text(card.toString())).toList(),
-                ),
-              )
-              .toList(),
-        ),
+      body: Row(
+        children: board.tableau
+            .map(
+              (cards) => Expanded(child: CardStack(cards: cards)),
+            )
+            .toList(),
       ),
     );
   }
