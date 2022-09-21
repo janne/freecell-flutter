@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:freecell/card.dart' as fc;
+import 'package:freecell/freecell.dart' as fc;
 import 'package:freecell/widgets/playing_card.dart';
 
 class CardStack extends StatelessWidget {
