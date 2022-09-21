@@ -1,12 +1,25 @@
 enum Suit { clubs, diamonds, hearts, spades }
 
-class Rank {
+class Card {
   final int _rank;
+  final Suit _suit;
 
-  Rank(this._rank);
+  Card(this._rank, this._suit);
 
-  @override
-  String toString() {
+  String get suit {
+    switch (_suit) {
+      case Suit.clubs:
+        return "♣";
+      case Suit.diamonds:
+        return "♦";
+      case Suit.hearts:
+        return "♥";
+      case Suit.spades:
+        return "♠";
+    }
+  }
+
+  String get rank {
     switch (_rank) {
       case 1:
         return "A";
@@ -20,29 +33,9 @@ class Rank {
         return _rank.toString();
     }
   }
-}
-
-class Card {
-  Rank rank;
-  Suit suit;
-
-  Card({required this.rank, required this.suit});
-
-  String get suitChar {
-    switch (suit) {
-      case Suit.clubs:
-        return "♣";
-      case Suit.diamonds:
-        return "♦";
-      case Suit.hearts:
-        return "♥";
-      case Suit.spades:
-        return "♠";
-    }
-  }
 
   @override
   String toString() {
-    return "$rank$suitChar";
+    return "$rank$suit";
   }
 }

@@ -7,10 +7,10 @@ class Deck {
   Deck(this.cards);
 
   factory Deck.full() {
-    return Deck(List.generate(13, (rank) => Rank(rank + 1))
+    return Deck(List.generate(13, (i) => i + 1)
         .map(
           (rank) => Suit.values.map(
-            (suit) => Card(rank: rank, suit: suit),
+            (suit) => Card(rank, suit),
           ),
         )
         .expand((v) => v)

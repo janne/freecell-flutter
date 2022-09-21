@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:freecell/board.dart';
+import 'package:freecell/card.dart' as Freecell;
 import 'package:freecell/deck.dart';
 
 void main() {
@@ -30,12 +32,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final int _seed = 1;
-  late Deck _deck;
-
-  _MyHomePageState() {
-    _deck = Deck.shuffled(_seed);
-  }
+  final board = Board(1);
 
   void _draw() {
     setState(() {
@@ -46,13 +43,16 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
+      appBar: AppBar(title: Text(widget.title)),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[Text(_deck.toString())],
+        child: Row(
+          children: board.tableau
+              .map(
+                (col) => Column(
+                  children: col.map((card) => Text(card.toString())).toList(),
+                ),
+              )
+              .toList(),
         ),
       ),
     );
