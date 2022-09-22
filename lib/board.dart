@@ -43,7 +43,7 @@ class Board {
         freeCells: freeCells.map((c) => c == card ? null : c).toList(),
       );
 
-  BoardFn? addCardInHome(Card card) {
+  BoardFn? moveCardToHomeCell(Card card) {
     if (card.rank == "A") {
       final index = findIndex((column) => column.isEmpty, homeCells);
       if (index != null) {
@@ -62,7 +62,7 @@ class Board {
     return null;
   }
 
-  BoardFn? addCardInStack(Card card) {
+  BoardFn? moveCardToTableau(Card card) {
     final index = findIndex((column) {
       if (column.isEmpty) return false;
       final lastCard = column.last;
@@ -80,7 +80,7 @@ class Board {
     return null;
   }
 
-  BoardFn? addCardInFreeCell(Card card) {
+  BoardFn? moveCardToFreeCell(Card card) {
     final index = findIndex((cell) => cell == null, freeCells);
 
     if (index != null) {
@@ -89,7 +89,7 @@ class Board {
     return null;
   }
 
-  BoardFn? moveCard(Card card) => [addCardInHome, addCardInStack, addCardInFreeCell].fold<BoardFn?>(null, (memo, fn) {
+  BoardFn? moveCard(Card card) => [moveCardToHomeCell, moveCardToTableau, moveCardToFreeCell].fold<BoardFn?>(null, (memo, fn) {
         if (memo != null) return memo;
         return fn(card);
       });
