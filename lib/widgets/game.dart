@@ -14,7 +14,17 @@ class Game extends StatefulWidget {
 class _GameState extends State<Game> {
   var board = Board.withSeed(1);
 
-  void _onTap(fc.Card card) {
+  void _onTap(fc.Card card, [int count = 1]) {
+    if (count > 1) {
+      final updateGame = board.moveCards(card, count);
+      if (updateGame != null) {
+        setState(() {
+          board = updateGame(board);
+        });
+      }
+      return;
+    }
+
     final updateGame = board.moveCard(card);
     if (updateGame != null) {
       setState(() {

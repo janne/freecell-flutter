@@ -4,7 +4,7 @@ import 'package:freecell/widgets/playing_card.dart';
 
 class CardStack extends StatelessWidget {
   final List<fc.Card> cards;
-  final Function(fc.Card card) onTap;
+  final Function(fc.Card card, int count) onTap;
 
   const CardStack({super.key, required this.cards, required this.onTap});
 
@@ -18,7 +18,7 @@ class CardStack extends StatelessWidget {
               key,
               Positioned(
                 top: key * 35,
-                child: PlayingCard(card: card, onTap: onTap),
+                child: PlayingCard(card: card, onTap: (fc.Card card) => onTap(card, cards.length - key)),
               ),
             ),
           )

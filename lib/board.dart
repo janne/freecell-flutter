@@ -69,12 +69,12 @@ class Board {
       return lastCard.isBlack != card.isBlack && lastCard.rank == card.nextRank;
     });
     if (index != null) {
-      return (Board board) => board.copyWith(tableau: pushToIndex(tableau, card, index));
+      return (Board board) => board.copyWith(tableau: pushToIndex(board.tableau, card, index));
     }
 
     final indexEmpty = findIndex(tableau, (column) => column.isEmpty);
     if (indexEmpty != null) {
-      return (Board board) => board.copyWith(tableau: pushToIndex(tableau, card, indexEmpty));
+      return (Board board) => board.copyWith(tableau: pushToIndex(board.tableau, card, indexEmpty));
     }
 
     return null;
@@ -93,4 +93,46 @@ class Board {
         if (memo != null) return memo;
         return fn(card);
       });
+
+  BoardFn? moveCards(Card card, int count) {
+    final holes = tableau.where((column) => column.isEmpty).length + freeCells.where((cell) => cell == null).length;
+
+    if (count > holes + 1) return null;
+
+    final column = findIndex(tableau, (column) => column.contains(card))!;
+    final index = findIndex(tableau[column], (c) => c == card)!;
+    final cards = tableau[column].getRange(index, index + count).toList();
+
+    for (var i = 1; i < cards.length; i++) {
+      if (cards[i].isBlack == cards[i - 1].isBlack) return null;
+      if (cards[i].nextRank != cards[i - 1].rank) return null;
+    }
+
+    final i = findIndex(tableau, (column) {
+      if (column.isEmpty) return false;
+      return column.last.isBlack != card.isBlack && column.last.rank == card.nextRank;
+    });
+
+    if (i != null) {
+      return (Board board) {
+        final cards = board.tableau[column].getRange(index, index + count).toList();
+        final tableau = cards.fold(board.tableau, (memo, card) => pushToIndex(memo, card, i));
+        final tableauMinusCard = deleteFromIndex(tableau, column, index);
+        return board.copyWith(tableau: tableauMinusCard);
+      };
+    }
+
+    if (count > holes) return null;
+
+    final j = findIndex(tableau, (column) => column.isEmpty);
+    if (j != null) {
+      return (Board board) {
+        final cards = board.tableau[column].getRange(index, index + count).toList();
+        final tableau = cards.fold(board.tableau, (memo, card) => pushToIndex(memo, card, j));
+        return board.copyWith(tableau: deleteFromIndex(tableau, column, index));
+      };
+    }
+
+    return null;
+  }
 }
