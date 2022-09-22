@@ -45,46 +45,46 @@ class Board {
 
   BoardFn? moveCardToHomeCell(Card card) {
     if (card.rank == "A") {
-      final index = findIndex((column) => column.isEmpty, homeCells);
+      final index = findIndex(homeCells, (column) => column.isEmpty);
       if (index != null) {
-        return (Board board) => board.copyWith(homeCells: pushToIndex(card, index, board.homeCells));
+        return (Board board) => board.copyWith(homeCells: pushToIndex(board.homeCells, card, index));
       }
     }
 
-    final index = findIndex((column) {
+    final index = findIndex(homeCells, (column) {
       if (column.isEmpty) return false;
       return column.last.suit == card.suit && column.last.nextRank == card.rank;
-    }, homeCells);
+    });
     if (index != null) {
-      return (Board board) => board.copyWith(homeCells: pushToIndex(card, index, board.homeCells));
+      return (Board board) => board.copyWith(homeCells: pushToIndex(board.homeCells, card, index));
     }
 
     return null;
   }
 
   BoardFn? moveCardToTableau(Card card) {
-    final index = findIndex((column) {
+    final index = findIndex(tableau, (column) {
       if (column.isEmpty) return false;
       final lastCard = column.last;
       return lastCard.isBlack != card.isBlack && lastCard.rank == card.nextRank;
-    }, tableau);
+    });
     if (index != null) {
-      return (Board board) => board.copyWith(tableau: pushToIndex(card, index, tableau));
+      return (Board board) => board.copyWith(tableau: pushToIndex(tableau, card, index));
     }
 
-    final indexEmpty = findIndex((column) => column.isEmpty, tableau);
+    final indexEmpty = findIndex(tableau, (column) => column.isEmpty);
     if (indexEmpty != null) {
-      return (Board board) => board.copyWith(tableau: pushToIndex(card, indexEmpty, tableau));
+      return (Board board) => board.copyWith(tableau: pushToIndex(tableau, card, indexEmpty));
     }
 
     return null;
   }
 
   BoardFn? moveCardToFreeCell(Card card) {
-    final index = findIndex((cell) => cell == null, freeCells);
+    final index = findIndex(freeCells, (cell) => cell == null);
 
     if (index != null) {
-      return (Board board) => board.copyWith(freeCells: setAtIndex(card, index, board.freeCells));
+      return (Board board) => board.copyWith(freeCells: setAtIndex(board.freeCells, card, index));
     }
     return null;
   }
