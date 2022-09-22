@@ -74,55 +74,60 @@ class _GameState extends State<Game> {
             IconButton(icon: const Icon(Icons.undo), tooltip: "Undo", onPressed: () {}),
             IconButton(icon: const Icon(Icons.redo), tooltip: "Redo", onPressed: () {})
           ]),
-      body: Column(children: [
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Expanded(
-            child: Row(
-              children: board.freeCells
-                  .map<Widget>(
-                    (card) => card == null
-                        ? const SizedBox(
-                            width: 62,
-                            height: 88,
-                          )
-                        : PlayingCard(
-                            card: card,
-                            onTap: _onTap,
-                          ),
-                  )
-                  .toList(),
-            ),
-          ),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: board.homeCells
-                  .map<Widget>(
-                    (stack) => stack.isEmpty
-                        ? const SizedBox(
-                            width: 62,
-                            height: 88,
-                          )
-                        : PlayingCard(
-                            card: stack.last,
-                            onTap: _onTap,
-                          ),
-                  )
-                  .toList(),
-            ),
-            // Row(children: []),
-          )
-        ]),
-        Expanded(
-          child: Row(
-            children: board.tableau
-                .map(
-                  (cards) => Expanded(child: CardStack(cards: cards, onTap: _onTap)),
-                )
-                .toList(),
-          ),
-        )
-      ]),
+      body: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1000),
+          child: Column(children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Expanded(
+                child: Row(
+                  children: board.freeCells
+                      .map<Widget>(
+                        (card) => card == null
+                            ? const SizedBox(
+                                width: 62 * 2,
+                                height: 88 * 2,
+                              )
+                            : PlayingCard(
+                                card: card,
+                                onTap: _onTap,
+                              ),
+                      )
+                      .toList(),
+                ),
+              ),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: board.homeCells
+                      .map<Widget>(
+                        (stack) => stack.isEmpty
+                            ? const SizedBox(
+                                width: 62 * 2,
+                                height: 88 * 2,
+                              )
+                            : PlayingCard(
+                                card: stack.last,
+                                onTap: _onTap,
+                              ),
+                      )
+                      .toList(),
+                ),
+                // Row(children: []),
+              )
+            ]),
+            Expanded(
+              child: Row(
+                children: board.tableau
+                    .map(
+                      (cards) => Expanded(child: CardStack(cards: cards, onTap: _onTap)),
+                    )
+                    .toList(),
+              ),
+            )
+          ]),
+        ),
+      ),
     );
   }
 }
