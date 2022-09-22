@@ -34,12 +34,10 @@ class Board {
         seed: seed ?? this.seed, freeCells: freeCells ?? this.freeCells, homeCells: homeCells ?? this.homeCells, tableau: tableau ?? this.tableau);
   }
 
-  Board removeCard(Card card) {
-    final tableau = this.tableau.map((stack) => stack.where((c) => c != card).toList()).toList();
-    final homeCells = this.homeCells.map((stack) => stack.where((c) => c != card).toList()).toList();
-    final freeCells = this.freeCells.map((c) => c == card ? null : c).toList();
-    return copyWith(tableau: tableau, freeCells: freeCells, homeCells: homeCells);
-  }
+  Board removeCard(Card card) => copyWith(
+      tableau: tableau.map((stack) => stack.where((c) => c != card).toList()).toList(),
+      homeCells: homeCells.map((stack) => stack.where((c) => c != card).toList()).toList(),
+      freeCells: freeCells.map((c) => c == card ? null : c).toList());
 
   BoardFn? addCardInHome(Card card) {
     return null;
@@ -53,7 +51,7 @@ class Board {
     final index = findIndex((cell) => cell == null, freeCells);
 
     if (index != null) {
-      return (Board board) => board.copyWith(freeCells: setAtIndex(card, index, freeCells));
+      return (Board board) => board.copyWith(freeCells: setAtIndex(card, index, board.freeCells));
     }
     return null;
   }
