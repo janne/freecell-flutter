@@ -29,15 +29,19 @@ class Board {
     List<List<Card>>? tableau,
     List<List<Card>>? homeCells,
     List<Card?>? freeCells,
-  }) {
-    return Board(
-        seed: seed ?? this.seed, freeCells: freeCells ?? this.freeCells, homeCells: homeCells ?? this.homeCells, tableau: tableau ?? this.tableau);
-  }
+  }) =>
+      Board(
+        seed: seed ?? this.seed,
+        freeCells: freeCells ?? this.freeCells,
+        homeCells: homeCells ?? this.homeCells,
+        tableau: tableau ?? this.tableau,
+      );
 
   Board removeCard(Card card) => copyWith(
-      tableau: tableau.map((stack) => stack.where((c) => c != card).toList()).toList(),
-      homeCells: homeCells.map((stack) => stack.where((c) => c != card).toList()).toList(),
-      freeCells: freeCells.map((c) => c == card ? null : c).toList());
+        tableau: tableau.map((stack) => stack.where((c) => c != card).toList()).toList(),
+        homeCells: homeCells.map((stack) => stack.where((c) => c != card).toList()).toList(),
+        freeCells: freeCells.map((c) => c == card ? null : c).toList(),
+      );
 
   BoardFn? addCardInHome(Card card) {
     return null;
@@ -56,10 +60,8 @@ class Board {
     return null;
   }
 
-  BoardFn? moveCard(Card card) {
-    return [addCardInHome, addCardInStack, addCardInFreeCell].fold<BoardFn?>(null, (memo, fn) {
-      if (memo != null) return memo;
-      return fn(card);
-    });
-  }
+  BoardFn? moveCard(Card card) => [addCardInHome, addCardInStack, addCardInFreeCell].fold<BoardFn?>(null, (memo, fn) {
+        if (memo != null) return memo;
+        return fn(card);
+      });
 }
