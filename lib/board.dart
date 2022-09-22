@@ -44,6 +44,21 @@ class Board {
       );
 
   BoardFn? addCardInHome(Card card) {
+    if (card.rank == "A") {
+      final index = findIndex((column) => column.isEmpty, homeCells);
+      if (index != null) {
+        return (Board board) => board.copyWith(homeCells: pushToIndex(card, index, board.homeCells));
+      }
+    }
+
+    final index = findIndex((column) {
+      if (column.isEmpty) return false;
+      return column.last.suit == card.suit && column.last.nextRank == card.rank;
+    }, homeCells);
+    if (index != null) {
+      return (Board board) => board.copyWith(homeCells: pushToIndex(card, index, board.homeCells));
+    }
+
     return null;
   }
 
