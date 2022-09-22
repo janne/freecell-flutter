@@ -37,6 +37,8 @@ class Card {
     }
   }
 
+  get isBlack => _suit == Suit.clubs || _suit == Suit.spades;
+
   String get rank => _rankToString(_rank);
 
   String get nextRank => _rankToString(_rank + 1);

@@ -63,6 +63,20 @@ class Board {
   }
 
   BoardFn? addCardInStack(Card card) {
+    final index = findIndex((column) {
+      if (column.isEmpty) return false;
+      final lastCard = column.last;
+      return lastCard.isBlack != card.isBlack && lastCard.rank == card.nextRank;
+    }, tableau);
+    if (index != null) {
+      return (Board board) => board.copyWith(tableau: pushToIndex(card, index, tableau));
+    }
+
+    final indexEmpty = findIndex((column) => column.isEmpty, tableau);
+    if (indexEmpty != null) {
+      return (Board board) => board.copyWith(tableau: pushToIndex(card, indexEmpty, tableau));
+    }
+
     return null;
   }
 
