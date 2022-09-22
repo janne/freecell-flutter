@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:freecell/board.dart';
 import 'package:freecell/widgets/card_stack.dart';
@@ -12,7 +15,7 @@ class Game extends StatefulWidget {
 }
 
 class _GameState extends State<Game> {
-  var board = Board.withSeed(1);
+  var board = Board.withSeed(Random().nextInt(1000000));
 
   void _onTap(fc.Card card, [int count = 1]) {
     if (count > 1) {
@@ -37,7 +40,40 @@ class _GameState extends State<Game> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.green,
-      appBar: AppBar(title: const Text("Kungen")),
+      appBar: AppBar(
+          centerTitle: true,
+          title: SizedBox(
+              width: 150,
+              height: 50,
+              child: TextField(
+                controller: TextEditingController()..text = board.seed.toString(),
+                decoration: const InputDecoration(border: UnderlineInputBorder(), prefixText: "#"),
+                keyboardType: TextInputType.number,
+                onSubmitted: (String value) {
+                  setState(() {
+                    try {
+                      board = Board.withSeed(int.parse(value).clamp(0, 1000000));
+                    } catch (e) {
+                      if (kDebugMode) {
+                        print("Format exception: $value");
+                      }
+                    }
+                  });
+                },
+              )),
+          leading: IconButton(
+              icon: const Icon(Icons.autorenew),
+              tooltip: "New game",
+              onPressed: () {
+                setState(() {
+                  board = Board.withSeed(Random().nextInt(1000000));
+                });
+              }),
+          actions: [
+            IconButton(icon: const Icon(Icons.fast_rewind), tooltip: "Restart", onPressed: () {}),
+            IconButton(icon: const Icon(Icons.undo), tooltip: "Undo", onPressed: () {}),
+            IconButton(icon: const Icon(Icons.redo), tooltip: "Redo", onPressed: () {})
+          ]),
       body: Column(children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Expanded(
