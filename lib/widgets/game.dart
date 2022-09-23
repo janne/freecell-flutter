@@ -100,7 +100,8 @@ class _GameState extends State<Game> {
       backgroundColor: Colors.green,
       appBar: AppBar(
           centerTitle: true,
-          title: PlayingCardSpace(
+          title: SizedBox(
+            width: 100,
             child: TextField(
               controller: TextEditingController()..text = board.seed.toString(),
               decoration: const InputDecoration(border: UnderlineInputBorder(), prefixText: "#"),
