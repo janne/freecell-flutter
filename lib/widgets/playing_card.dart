@@ -12,8 +12,8 @@ class PlayingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 62 * 2,
-      height: 88 * 2,
+      width: 100,
+      height: 140,
       child: InkWell(
         onTap: () => onTap(card),
         child: Card(
@@ -29,7 +29,7 @@ class PlayingCard extends StatelessWidget {
               ),
               Text(
                 card.suit,
-                style: TextStyle(fontSize: 48, color: _color),
+                style: TextStyle(fontSize: 40, color: _color),
               ),
             ]),
           ),

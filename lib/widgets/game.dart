@@ -76,7 +76,7 @@ class _GameState extends State<Game> {
           ]),
       body: Center(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 1000),
+          constraints: const BoxConstraints(maxWidth: 800),
           child: Column(children: [
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Expanded(
@@ -85,8 +85,8 @@ class _GameState extends State<Game> {
                       .map<Widget>(
                         (card) => card == null
                             ? const SizedBox(
-                                width: 62 * 2,
-                                height: 88 * 2,
+                                width: 100,
+                                height: 140,
                               )
                             : PlayingCard(
                                 card: card,
@@ -103,8 +103,8 @@ class _GameState extends State<Game> {
                       .map<Widget>(
                         (stack) => stack.isEmpty
                             ? const SizedBox(
-                                width: 62 * 2,
-                                height: 88 * 2,
+                                width: 100,
+                                height: 140,
                               )
                             : PlayingCard(
                                 card: stack.last,
