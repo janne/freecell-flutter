@@ -2,10 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:freecell/board.dart';
-import 'package:freecell/widgets/card_stack.dart';
 import 'package:freecell/freecell.dart' as fc;
-import 'package:freecell/widgets/playing_card.dart';
+import 'package:freecell/widgets/board.dart';
 import 'package:freecell/widgets/playing_card_space.dart';
 
 class Game extends StatefulWidget {
@@ -16,7 +14,7 @@ class Game extends StatefulWidget {
 }
 
 class _GameState extends State<Game> {
-  var board = Board.withSeed(Random().nextInt(1000000));
+  var board = fc.Board.withSeed(Random().nextInt(1000000));
 
   void _onTap(fc.Card card, [int count = 1]) {
     if (count > 1) {
@@ -51,7 +49,7 @@ class _GameState extends State<Game> {
             onSubmitted: (String value) {
               setState(() {
                 try {
-                  board = Board.withSeed(int.parse(value).clamp(0, 1000000));
+                  board = fc.Board.withSeed(int.parse(value).clamp(0, 1000000));
                 } catch (e) {
                   if (kDebugMode) {
                     print("Format exception: $value");
@@ -65,7 +63,7 @@ class _GameState extends State<Game> {
               tooltip: "New game",
               onPressed: () {
                 setState(() {
-                  board = Board.withSeed(Random().nextInt(1000000));
+                  board = fc.Board.withSeed(Random().nextInt(1000000));
                 });
               }),
           actions: [
@@ -74,52 +72,7 @@ class _GameState extends State<Game> {
             IconButton(icon: const Icon(Icons.redo), tooltip: "Redo", onPressed: () {})
           ]),
       body: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 800),
-          child: Column(children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Expanded(
-                child: Row(
-                  children: board.freeCells
-                      .map<Widget>(
-                        (card) => card == null
-                            ? const PlayingCardSpace()
-                            : PlayingCard(
-                                card: card,
-                                onTap: _onTap,
-                              ),
-                      )
-                      .toList(),
-                ),
-              ),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: board.homeCells
-                      .map<Widget>(
-                        (stack) => stack.isEmpty
-                            ? const PlayingCardSpace()
-                            : PlayingCard(
-                                card: stack.last,
-                                onTap: _onTap,
-                              ),
-                      )
-                      .toList(),
-                ),
-                // Row(children: []),
-              )
-            ]),
-            Expanded(
-              child: Row(
-                children: board.tableau
-                    .map(
-                      (cards) => Expanded(child: CardStack(cards: cards, onTap: _onTap)),
-                    )
-                    .toList(),
-              ),
-            )
-          ]),
-        ),
+        child: Board(board: board, onTap: _onTap),
       ),
     );
   }
