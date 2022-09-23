@@ -15,6 +15,42 @@ class Game extends StatefulWidget {
 
 class _GameState extends State<Game> {
   var board = fc.Board.withSeed(Random().nextInt(1000000));
+  List<fc.Board> undoState = [];
+  int undoIndex = -1;
+
+  @override
+  void initState() {
+    _addUndoState();
+    super.initState();
+  }
+
+  _addUndoState() {
+    setState(() {
+      undoState = [...undoState.getRange(0, undoIndex + 1), board];
+      undoIndex = undoState.length - 1;
+    });
+  }
+
+  _restart() {
+    setState(() {
+      undoIndex = 0;
+      board = undoState[undoIndex];
+    });
+  }
+
+  _undo() {
+    setState(() {
+      undoIndex -= 1;
+      board = undoState[undoIndex];
+    });
+  }
+
+  _redo() {
+    setState(() {
+      undoIndex += 1;
+      board = undoState[undoIndex];
+    });
+  }
 
   void _onTap(fc.Card card, [int count = 1]) {
     if (count > 1) {
@@ -22,6 +58,7 @@ class _GameState extends State<Game> {
       if (updateGame != null) {
         setState(() {
           board = updateGame(board);
+          _addUndoState();
         });
       }
       return;
@@ -31,6 +68,7 @@ class _GameState extends State<Game> {
     if (updateGame != null) {
       setState(() {
         board = updateGame(board.removeCard(card));
+        _addUndoState();
       });
     }
   }
@@ -50,6 +88,9 @@ class _GameState extends State<Game> {
   _newGame() {
     setState(() {
       board = fc.Board.withSeed(Random().nextInt(1000000));
+      undoState = [];
+      undoIndex = -1;
+      _addUndoState();
     });
   }
 
@@ -69,9 +110,13 @@ class _GameState extends State<Game> {
           ),
           leading: IconButton(icon: const Icon(Icons.autorenew), tooltip: "New game", onPressed: _newGame),
           actions: [
-            IconButton(icon: const Icon(Icons.fast_rewind), tooltip: "Restart", onPressed: () {}),
-            IconButton(icon: const Icon(Icons.undo), tooltip: "Undo", onPressed: () {}),
-            IconButton(icon: const Icon(Icons.redo), tooltip: "Redo", onPressed: () {})
+            IconButton(icon: const Icon(Icons.fast_rewind), tooltip: "Restart", onPressed: undoIndex == 0 ? null : _restart),
+            IconButton(
+              icon: const Icon(Icons.undo),
+              tooltip: "Undo",
+              onPressed: undoIndex == 0 ? null : _undo,
+            ),
+            IconButton(icon: const Icon(Icons.redo), tooltip: "Redo", onPressed: undoIndex == undoState.length - 1 ? null : _redo)
           ]),
       body: Center(
         child: Board(board: board, onTap: _onTap),
