@@ -35,6 +35,24 @@ class _GameState extends State<Game> {
     }
   }
 
+  _onChangeSeed(String value) {
+    setState(() {
+      try {
+        board = fc.Board.withSeed(int.parse(value).clamp(0, 1000000));
+      } catch (e) {
+        if (kDebugMode) {
+          print("Format exception: $value");
+        }
+      }
+    });
+  }
+
+  _newGame() {
+    setState(() {
+      board = fc.Board.withSeed(Random().nextInt(1000000));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,30 +60,14 @@ class _GameState extends State<Game> {
       appBar: AppBar(
           centerTitle: true,
           title: PlayingCardSpace(
-              child: TextField(
-            controller: TextEditingController()..text = board.seed.toString(),
-            decoration: const InputDecoration(border: UnderlineInputBorder(), prefixText: "#"),
-            keyboardType: TextInputType.number,
-            onSubmitted: (String value) {
-              setState(() {
-                try {
-                  board = fc.Board.withSeed(int.parse(value).clamp(0, 1000000));
-                } catch (e) {
-                  if (kDebugMode) {
-                    print("Format exception: $value");
-                  }
-                }
-              });
-            },
-          )),
-          leading: IconButton(
-              icon: const Icon(Icons.autorenew),
-              tooltip: "New game",
-              onPressed: () {
-                setState(() {
-                  board = fc.Board.withSeed(Random().nextInt(1000000));
-                });
-              }),
+            child: TextField(
+              controller: TextEditingController()..text = board.seed.toString(),
+              decoration: const InputDecoration(border: UnderlineInputBorder(), prefixText: "#"),
+              keyboardType: TextInputType.number,
+              onSubmitted: _onChangeSeed,
+            ),
+          ),
+          leading: IconButton(icon: const Icon(Icons.autorenew), tooltip: "New game", onPressed: _newGame),
           actions: [
             IconButton(icon: const Icon(Icons.fast_rewind), tooltip: "Restart", onPressed: () {}),
             IconButton(icon: const Icon(Icons.undo), tooltip: "Undo", onPressed: () {}),
