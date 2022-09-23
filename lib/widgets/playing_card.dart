@@ -5,6 +5,8 @@ class PlayingCard extends StatelessWidget {
   final fc.Card card;
   final Function(fc.Card card) onTap;
 
+  Color get _color => card.isBlack ? Colors.black : Colors.red;
+
   const PlayingCard({super.key, required this.card, required this.onTap});
 
   @override
@@ -22,12 +24,12 @@ class PlayingCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   card.rank,
-                  style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: _color),
                 ),
               ),
               Text(
                 card.suit,
-                style: const TextStyle(fontSize: 48),
+                style: TextStyle(fontSize: 48, color: _color),
               ),
             ]),
           ),
