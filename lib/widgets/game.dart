@@ -24,10 +24,11 @@ class _GameState extends State<Game> {
     super.initState();
   }
 
-  _addUndoState() {
+  _addUndoState([skipAutoMove = false]) {
     setState(() {
       undoState = [...undoState.getRange(0, undoIndex + 1), board];
       undoIndex = undoState.length - 1;
+      if (!skipAutoMove) autoMove();
     });
   }
 
@@ -52,6 +53,23 @@ class _GameState extends State<Game> {
     });
   }
 
+  autoMove() {
+    final cardsToTest = <fc.Card>[
+      ...(board.freeCells.where((cell) => cell != null)).cast<fc.Card>(),
+      ...board.tableau.where((stack) => stack.isNotEmpty).map((stack) => stack.last)
+    ];
+    for (final card in cardsToTest) {
+      final updateGame = board.moveCardToHomeCell(card);
+      if (updateGame != null) {
+        setState(() {
+          board = updateGame(board.removeCard(card));
+        });
+        _addUndoState();
+        break;
+      }
+    }
+  }
+
   void _onTap(fc.Card card, [int count = 1]) {
     if (count > 1) {
       final updateGame = board.moveCards(card, count);
@@ -66,9 +84,10 @@ class _GameState extends State<Game> {
 
     final updateGame = board.moveCard(card);
     if (updateGame != null) {
+      final skipAutoMove = board.homeCells.any((cell) => cell.any((c) => c == card));
       setState(() {
         board = updateGame(board.removeCard(card));
-        _addUndoState();
+        _addUndoState(skipAutoMove);
       });
     }
   }
