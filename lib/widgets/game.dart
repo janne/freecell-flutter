@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:freecell/freecell.dart' as fc;
 import 'package:freecell/widgets/board.dart';
-import 'package:freecell/widgets/playing_card_space.dart';
 
 class Game extends StatefulWidget {
   const Game({super.key});
