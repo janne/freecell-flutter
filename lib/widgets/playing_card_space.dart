@@ -7,6 +7,6 @@ class PlayingCardSpace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(width: 100, height: 140, child: child);
+    return SizedBox(width: 52, height: 73, child: child);
   }
 }
