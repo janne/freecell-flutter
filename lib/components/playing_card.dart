@@ -1,14 +1,18 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame_svg/flame_svg.dart';
+import 'package:flutter/material.dart';
 
-class PlayingCard extends SvgComponent with TapCallbacks {
+class PlayingCard extends SvgComponent with TapCallbacks, DragCallbacks {
   final String _card;
+  final Vector2 _origin;
 
   PlayingCard({required Vector2 position, required String card})
       : _card = card,
+        _origin = position,
         super(position: position, size: Vector2(100, 160));
 
   @override
@@ -17,7 +21,16 @@ class PlayingCard extends SvgComponent with TapCallbacks {
   }
 
   @override
-  void onTapDown(TapDownEvent event) {
-    print("Tapped card!");
+  void onTapDown(TapDownEvent event) {}
+
+  @override
+  void onDragUpdate(DragUpdateEvent event) {
+    position += event.delta;
+  }
+
+  @override
+  void onDragEnd(DragEndEvent event) {
+    add(MoveEffect.to(_origin, EffectController(duration: 0.3, curve: Curves.easeInOutSine)));
+    super.onDragEnd(event);
   }
 }
