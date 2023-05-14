@@ -10,10 +10,10 @@ class PlayingCard extends SvgComponent with TapCallbacks, DragCallbacks {
   final String _card;
   final Vector2 _origin;
 
-  PlayingCard({required Vector2 position, required String card})
+  PlayingCard({required Vector2 position, required String card, required Vector2 size})
       : _card = card,
         _origin = position,
-        super(position: position, size: Vector2(100, 160));
+        super(position: position, size: size);
 
   @override
   Future<void> onLoad() async {
