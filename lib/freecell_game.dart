@@ -1,3 +1,14 @@
-import 'package:flame/game.dart';
+import 'dart:async';
 
-class FreecellGame extends FlameGame {}
+import 'package:flame/game.dart';
+import 'components/playing_card.dart';
+
+class FreecellGame extends FlameGame {
+  @override
+  Future<void> onLoad() async {
+    for (int i = 0; i < 8; i++) {
+      final card = PlayingCard(card: "${i + 2}S", position: Vector2(110 * i + 10, 50));
+      add(card);
+    }
+  }
+}
