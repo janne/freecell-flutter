@@ -6,7 +6,7 @@ import 'package:freecell/freecell.dart' as fc;
 import 'card_stack.dart';
 
 class Board extends StatelessWidget {
-  final fc.Board board;
+  final fc.BoardState board;
   final void Function(fc.Card card, [int count]) onTap;
 
   const Board({super.key, required this.board, required this.onTap});

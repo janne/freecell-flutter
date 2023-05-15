@@ -37,11 +37,26 @@ class Card {
     }
   }
 
+  String get suitChar {
+    switch (_suit) {
+      case Suit.clubs:
+        return "C";
+      case Suit.diamonds:
+        return "D";
+      case Suit.hearts:
+        return "H";
+      case Suit.spades:
+        return "S";
+    }
+  }
+
   get isBlack => _suit == Suit.clubs || _suit == Suit.spades;
 
   String get rank => _rankToString(_rank);
 
   String get nextRank => _rankToString(_rank + 1);
+
+  String get svgFileName => "$rank$suitChar.svg";
 
   @override
   String toString() => "$rank$suit";

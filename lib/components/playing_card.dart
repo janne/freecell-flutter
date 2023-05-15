@@ -4,20 +4,21 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame_svg/flame_svg.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show Curves;
+import '../card.dart';
 
 class PlayingCard extends SvgComponent with TapCallbacks, DragCallbacks {
-  final String _card;
+  final Card _card;
   final Vector2 _origin;
 
-  PlayingCard({required Vector2 position, required String card, required Vector2 size})
+  PlayingCard({required Vector2 position, required Card card, required Vector2 size})
       : _card = card,
         _origin = position,
         super(position: position, size: size);
 
   @override
   Future<void> onLoad() async {
-    svg = await Svg.load('images/cards/$_card.svg');
+    svg = await Svg.load('images/cards/${_card.svgFileName}');
   }
 
   @override

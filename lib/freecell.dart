@@ -1,2 +1,2 @@
 export "card.dart";
-export "board.dart";
+export 'board_state.dart';
