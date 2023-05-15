@@ -28,11 +28,15 @@ class FreecellGame extends FlameGame {
             svgFileName: card.svgFileName,
             position: columnPos(x, y),
             size: Vector2(width, width * 1.6),
-            onTap: () {
-              final prevBoard = gameState.undoStates.last;
+            onTap: () async {
+              final startIndex = gameState.undoIndex;
               gameState.onTap(card);
-              final board = gameState.undoStates.last;
-              moveDiff(board, prevBoard);
+              for (int i = startIndex; i < gameState.undoIndex; i++) {
+                final board = gameState.undoStates[i + 1];
+                final prevBoard = gameState.undoStates[i];
+                moveDiff(board, prevBoard);
+                await Future.delayed(const Duration(milliseconds: 400));
+              }
             },
           ),
         );
@@ -45,7 +49,6 @@ class FreecellGame extends FlameGame {
       prevBoard.tableau[col].asMap().forEach((i, prevCard) {
         final card = board.tableau[col].elementAtOrNull(i);
         if (card != prevCard) {
-          print("Card moved: $prevCard");
           final playingCard = children.whereType<PlayingCard>().firstWhere((card) => card.svgFileName == prevCard.svgFileName);
           playingCard.moveTo(Vector2(0, 0));
         }
