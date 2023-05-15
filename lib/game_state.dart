@@ -7,7 +7,7 @@ import 'card.dart';
 
 class GameState {
   BoardState board = BoardState.withSeed(Random().nextInt(1000000));
-  List<BoardState> undoState = [];
+  List<BoardState> undoStates = [];
   int undoIndex = -1;
 
   GameState() {
@@ -15,24 +15,24 @@ class GameState {
   }
 
   _addUndoState([skipAutoMove = false]) {
-    undoState = [...undoState.getRange(0, undoIndex + 1), board];
-    undoIndex = undoState.length - 1;
+    undoStates = [...undoStates.getRange(0, undoIndex + 1), board];
+    undoIndex = undoStates.length - 1;
     if (!skipAutoMove) autoMove();
   }
 
   restart() {
     undoIndex = 0;
-    board = undoState[undoIndex];
+    board = undoStates[undoIndex];
   }
 
   undo() {
     undoIndex -= 1;
-    board = undoState[undoIndex];
+    board = undoStates[undoIndex];
   }
 
   redo() {
     undoIndex += 1;
-    board = undoState[undoIndex];
+    board = undoStates[undoIndex];
   }
 
   autoMove() {
@@ -80,7 +80,7 @@ class GameState {
 
   newGame() {
     board = BoardState.withSeed(Random().nextInt(1000000));
-    undoState = [];
+    undoStates = [];
     undoIndex = -1;
     _addUndoState();
   }
