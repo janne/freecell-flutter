@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart' show Color, Colors;
+import 'package:freecell/board_state.dart';
 import 'components/playing_card.dart';
 import 'game_state.dart';
 
@@ -27,11 +28,29 @@ class FreecellGame extends FlameGame {
             svgFileName: card.svgFileName,
             position: columnPos(x, y),
             size: Vector2(width, width * 1.6),
-            onTap: () => gameState.onTap(card),
+            onTap: () {
+              final prevBoard = gameState.undoStates.last;
+              gameState.onTap(card);
+              final board = gameState.undoStates.last;
+              moveDiff(board, prevBoard);
+            },
           ),
         );
       });
     });
+  }
+
+  void moveDiff(BoardState board, BoardState prevBoard) {
+    for (int col = 0; col < 8; col++) {
+      prevBoard.tableau[col].asMap().forEach((i, prevCard) {
+        final card = board.tableau[col].elementAtOrNull(i);
+        if (card != prevCard) {
+          print("Card moved: $prevCard");
+          final playingCard = children.whereType<PlayingCard>().firstWhere((card) => card.svgFileName == prevCard.svgFileName);
+          playingCard.moveTo(Vector2(0, 0));
+        }
+      });
+    }
   }
 }
 
