@@ -9,6 +9,8 @@ import 'components/playing_card.dart';
 import 'game_state.dart';
 
 class FreecellGame extends FlameGame {
+  int prio = 0;
+
   final gameState = GameState();
 
   static const double padding = 10;
@@ -74,6 +76,7 @@ class FreecellGame extends FlameGame {
         if (card != prevCard) {
           final playingCard = children.whereType<PlayingCard>().firstWhere((card) => card.toString() == prevCard.toString());
           final Vector2? pos = findCard(prevCard);
+          playingCard.priority = ++prio;
           playingCard.moveTo(pos ?? Vector2(0, 0));
         }
       });
