@@ -7,16 +7,19 @@ import 'package:flame_svg/flame_svg.dart';
 import 'package:flutter/material.dart';
 
 class PlayingCard extends SvgComponent with TapCallbacks, DragCallbacks {
-  final String svgFileName;
+  final String rankSuite;
   final void Function() _onTap;
 
-  PlayingCard({required Vector2 position, required this.svgFileName, required Vector2 size, required void Function() onTap})
+  PlayingCard({required Vector2 position, required this.rankSuite, required Vector2 size, required void Function() onTap})
       : _onTap = onTap,
         super(position: position, size: size);
 
   @override
+  String toString() => rankSuite;
+
+  @override
   Future<void> onLoad() async {
-    svg = await Svg.load('images/cards/$svgFileName');
+    svg = await Svg.load('images/cards/$rankSuite.svg');
   }
 
   @override

@@ -25,7 +25,7 @@ class FreecellGame extends FlameGame {
       cards.asMap().forEach((y, card) {
         add(
           PlayingCard(
-            svgFileName: card.svgFileName,
+            rankSuite: card.toString(),
             position: columnPos(x, y),
             size: Vector2(width, width * 1.6),
             onTap: () async {
@@ -49,7 +49,7 @@ class FreecellGame extends FlameGame {
       prevBoard.tableau[col].asMap().forEach((i, prevCard) {
         final card = board.tableau[col].elementAtOrNull(i);
         if (card != prevCard) {
-          final playingCard = children.whereType<PlayingCard>().firstWhere((card) => card.svgFileName == prevCard.svgFileName);
+          final playingCard = children.whereType<PlayingCard>().firstWhere((card) => card.toString() == prevCard.toString());
           playingCard.moveTo(Vector2(0, 0));
         }
       });
