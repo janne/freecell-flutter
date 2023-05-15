@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:flame/game.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show Color, Colors;
+import 'card.dart';
 import 'components/playing_card.dart';
 import 'game_state.dart';
 
@@ -22,7 +23,14 @@ class FreecellGame extends FlameGame {
     final tableau = gameState.board.tableau;
     tableau.asMap().forEach((x, cards) {
       cards.asMap().forEach((y, card) {
-        add(PlayingCard(card: card, position: columnPos(x, y), size: Vector2(width, width * 1.6)));
+        add(
+          PlayingCard(
+            card: card,
+            position: columnPos(x, y),
+            size: Vector2(width, width * 1.6),
+            onTap: (Card card) => gameState.onTap(card),
+          ),
+        );
       });
     });
   }
