@@ -60,6 +60,10 @@ class FreecellGame extends FlameGame {
       final homecell = findIndex(gameState.board.homeCells[i], (c) => card == c);
       if (homecell != null) return homeCellPos(i);
     }
+    for (int i = 0; i < 8; i++) {
+      final tab = findIndex(gameState.board.tableau[i], (c) => card == c);
+      if (tab != null) return tableauPos(i, tab);
+    }
     return Vector2(0, 0);
   }
 
