@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart' show Color, Colors;
-import 'card.dart';
 import 'components/playing_card.dart';
 import 'game_state.dart';
 
@@ -25,10 +24,10 @@ class FreecellGame extends FlameGame {
       cards.asMap().forEach((y, card) {
         add(
           PlayingCard(
-            card: card,
+            svgFileName: card.svgFileName,
             position: columnPos(x, y),
             size: Vector2(width, width * 1.6),
-            onTap: (Card card) => gameState.onTap(card),
+            onTap: () => gameState.onTap(card),
           ),
         );
       });
