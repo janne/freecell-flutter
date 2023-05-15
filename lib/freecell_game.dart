@@ -15,18 +15,18 @@ class FreecellGame extends FlameGame {
   @override
   Color backgroundColor() => Colors.green;
 
-  Vector2 columnPos(int column, int row) => Vector2(padding + (width + padding) * column as double, 50);
+  Vector2 columnPos(int column, int row) => Vector2(padding + (width + padding) * column as double, 50 + row * 50);
 
   @override
   Future<void> onLoad() async {
     final tableau = gameState.board.tableau;
-    tableau.asMap().forEach((i, cards) {
-      final card = PlayingCard(card: cards.first, position: columnPos(i, 0), size: Vector2(width, width * 1.6));
-      add(card);
+    tableau.asMap().forEach((x, cards) {
+      cards.asMap().forEach((y, card) {
+        add(PlayingCard(card: card, position: columnPos(x, y), size: Vector2(width, width * 1.6)));
+      });
     });
   }
 }
-
 
 // return Scaffold(
 //   backgroundColor: Colors.green,

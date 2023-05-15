@@ -23,7 +23,9 @@ class PlayingCard extends SvgComponent with TapCallbacks, DragCallbacks {
   }
 
   @override
-  void onTapDown(TapDownEvent event) {}
+  void onTapDown(TapDownEvent event) {
+    print(_card);
+  }
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
