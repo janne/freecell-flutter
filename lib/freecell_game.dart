@@ -22,7 +22,9 @@ class FreecellGame extends FlameGame {
 
   Vector2 tableauPos(int column, int row) => Vector2(padding + (width + padding) * column, height + padding * 2 + row * height / 2);
 
-  Vector2 freeCellPos(int column) => Vector2(padding + (width + padding) * column, padding);
+  Vector2 freeCellPos(int column) => Vector2(padding + (width + padding / 2) * column, padding);
+
+  Vector2 homeCellPos(int column) => Vector2(padding * 6.5 + width * 4 + (width + padding / 2) * column, padding);
 
   @override
   Future<void> onLoad() async {
@@ -51,10 +53,14 @@ class FreecellGame extends FlameGame {
     }
   }
 
-  Vector2? findCard(Card card) {
-    final column = findIndex(gameState.board.freeCells, (c) => card == c);
-    if (column == null) return null;
-    return freeCellPos(column);
+  Vector2 findCard(Card card) {
+    final freecell = findIndex(gameState.board.freeCells, (c) => card == c);
+    if (freecell != null) return freeCellPos(freecell);
+    for (int i = 0; i < 4; i++) {
+      final homecell = findIndex(gameState.board.homeCells[i], (c) => card == c);
+      if (homecell != null) return homeCellPos(i);
+    }
+    return Vector2(0, 0);
   }
 
   void moveDiff(BoardState board, BoardState prevBoard) {
