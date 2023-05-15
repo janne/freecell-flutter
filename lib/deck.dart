@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
-import 'package:freecell/card.dart';
-import 'package:freecell/generator.dart';
+
+import 'card.dart';
+import 'generator.dart';
 
 @immutable
 class Deck {

@@ -5,6 +5,7 @@ import 'package:flame/effects.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame_svg/flame_svg.dart';
 import 'package:flutter/material.dart' show Curves;
+
 import '../card.dart';
 
 class PlayingCard extends SvgComponent with TapCallbacks, DragCallbacks {

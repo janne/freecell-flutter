@@ -1,7 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-import 'package:freecell/freecell.dart';
+
+import 'board_state.dart';
+import 'card.dart';
 
 class GameState {
   BoardState board = BoardState.withSeed(Random().nextInt(1000000));
