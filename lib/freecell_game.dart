@@ -30,7 +30,8 @@ class FreecellGame extends FlameGame {
 
   @override
   Future<void> onLoad() async {
-    gameState.board.tableau.asMap().forEach((x, cards) {
+    final board = gameState.undoStates[0];
+    board.tableau.asMap().forEach((x, cards) {
       cards.asMap().forEach((y, card) {
         add(
           PlayingCard(
@@ -42,11 +43,17 @@ class FreecellGame extends FlameGame {
         );
       });
     });
+    await Future.delayed(const Duration(milliseconds: 500));
+    animateUndoStates(0);
   }
 
-  Future<void> handleTap(Card card) async {
+  void handleTap(Card card) {
     final startIndex = gameState.undoIndex;
     gameState.onTap(card);
+    animateUndoStates(startIndex);
+  }
+
+  Future<void> animateUndoStates(int startIndex) async {
     for (int i = startIndex; i < gameState.undoIndex; i++) {
       final board = gameState.undoStates[i + 1];
       final prevBoard = gameState.undoStates[i];
