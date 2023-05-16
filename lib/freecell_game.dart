@@ -50,18 +50,21 @@ class FreecellGame extends FlameGame {
     for (int i = startIndex; i < gameState.undoIndex; i++) {
       final board = gameState.undoStates[i + 1];
       final prevBoard = gameState.undoStates[i];
-      moveDiff(board, prevBoard);
+      moveDiff(prevBoard, board);
       await Future.delayed(const Duration(milliseconds: 400));
     }
   }
 
   Vector2 findCard(Card card) {
+    // Freecells
     final freecell = findIndex(gameState.board.freeCells, (c) => card == c);
     if (freecell != null) return freeCellPos(freecell);
+    // Homecells
     for (int i = 0; i < 4; i++) {
       final homecell = findIndex(gameState.board.homeCells[i], (c) => card == c);
       if (homecell != null) return homeCellPos(i);
     }
+    // Tableau
     for (int i = 0; i < 8; i++) {
       final tab = findIndex(gameState.board.tableau[i], (c) => card == c);
       if (tab != null) return tableauPos(i, tab);
@@ -69,18 +72,37 @@ class FreecellGame extends FlameGame {
     return Vector2(0, 0);
   }
 
-  void moveDiff(BoardState board, BoardState prevBoard) {
-    for (int col = 0; col < 8; col++) {
-      prevBoard.tableau[col].asMap().forEach((i, prevCard) {
-        final card = board.tableau[col].elementAtOrNull(i);
-        if (card != prevCard) {
-          final playingCard = children.whereType<PlayingCard>().firstWhere((card) => card.toString() == prevCard.toString());
-          final Vector2? pos = findCard(prevCard);
-          playingCard.priority = ++prio;
-          playingCard.moveTo(pos ?? Vector2(0, 0));
+  void moveDiff(BoardState prevBoard, BoardState board) {
+    // Freecells
+    for (int col = 0; col < 4; col++) {
+      final card = board.freeCells[col];
+      if (card != null && card != prevBoard.freeCells[col]) {
+        animateCard(card);
+      }
+    }
+    // Homecells
+    for (int col = 0; col < 4; col++) {
+      board.homeCells[col].asMap().forEach((i, card) {
+        if (card != prevBoard.homeCells[col].elementAtOrNull(i)) {
+          animateCard(card);
         }
       });
     }
+    // Tableau
+    for (int col = 0; col < 8; col++) {
+      board.tableau[col].asMap().forEach((i, card) {
+        if (card != prevBoard.tableau[col].elementAtOrNull(i)) {
+          animateCard(card);
+        }
+      });
+    }
+  }
+
+  void animateCard(Card card) {
+    final playingCard = children.whereType<PlayingCard>().firstWhere((c) => c.toString() == card.toString());
+    final Vector2 pos = findCard(card);
+    playingCard.priority = ++prio;
+    playingCard.moveTo(pos);
   }
 }
 
