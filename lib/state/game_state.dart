@@ -7,36 +7,38 @@ import 'board_state.dart';
 import 'card.dart';
 
 class GameState {
-  BoardState board = BoardState.withSeed(Random().nextInt(1000000));
+  int seed = Random().nextInt(1000000);
+  late BoardState board;
   List<BoardState> undoStates = [];
   int undoIndex = -1;
 
   GameState() {
-    _addUndoState();
+    board = BoardState.withSeed(seed);
+    addUndoState();
   }
 
-  _addUndoState([skipAutoMove = false]) {
+  void addUndoState([skipAutoMove = false]) {
     undoStates = [...undoStates.getRange(0, undoIndex + 1), board];
     undoIndex = undoStates.length - 1;
-    if (!skipAutoMove) autoMove();
+    if (!skipAutoMove) _autoMove();
   }
 
-  restart() {
+  void restart() {
     undoIndex = 0;
     board = undoStates[undoIndex];
   }
 
-  undo() {
+  void undo() {
     undoIndex -= 1;
     board = undoStates[undoIndex];
   }
 
-  redo() {
+  void redo() {
     undoIndex += 1;
     board = undoStates[undoIndex];
   }
 
-  autoMove() {
+  void _autoMove() {
     final cardsToTest = <Card>[
       ...(board.freeCells.where((cell) => cell != null)).cast<Card>(),
       ...board.tableau.where((stack) => stack.isNotEmpty).map((stack) => stack.last)
@@ -45,7 +47,7 @@ class GameState {
       final updateGame = board.moveCardToHomeCell(card);
       if (updateGame != null) {
         board = updateGame(board.removeCard(card));
-        _addUndoState();
+        addUndoState();
         break;
       }
     }
@@ -66,7 +68,7 @@ class GameState {
       final updateGame = board.moveCards(card, count);
       if (updateGame != null) {
         board = updateGame(board);
-        _addUndoState();
+        addUndoState();
       }
       return;
     }
@@ -75,11 +77,11 @@ class GameState {
     if (updateGame != null) {
       final skipAutoMove = board.homeCells.any((cell) => cell.any((c) => c == card));
       board = updateGame(board.removeCard(card));
-      _addUndoState(skipAutoMove);
+      addUndoState(skipAutoMove);
     }
   }
 
-  changeSeed(String value) {
+  void changeSeed(String value) {
     try {
       board = BoardState.withSeed(int.parse(value).clamp(0, 1000000));
     } catch (e) {
@@ -89,10 +91,7 @@ class GameState {
     }
   }
 
-  newGame() {
-    board = BoardState.withSeed(Random().nextInt(1000000));
-    undoStates = [];
-    undoIndex = -1;
-    _addUndoState();
-  }
+  void prevGame() {}
+
+  void nextGame() {}
 }
