@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import 'card.dart';
 import 'deck.dart';
-import 'list_utils.dart';
+import '../utils/lists.dart';
 
 typedef BoardFn = BoardState Function(BoardState);
 

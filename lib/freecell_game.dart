@@ -2,11 +2,12 @@ import 'dart:async';
 
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart' show Color, Colors;
-import 'package:freecell/board_state.dart';
-import 'package:freecell/card.dart';
-import 'package:freecell/list_utils.dart';
+
+import 'state/board_state.dart';
+import 'state/card.dart';
+import 'utils/lists.dart';
 import 'components/playing_card.dart';
-import 'game_state.dart';
+import 'state/game_state.dart';
 
 class FreecellGame extends FlameGame {
   int prio = 0;

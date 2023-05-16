@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-import 'package:freecell/list_utils.dart';
 
+import '../utils/lists.dart';
 import 'board_state.dart';
 import 'card.dart';
 
