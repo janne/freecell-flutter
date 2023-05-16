@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:freecell/list_utils.dart';
 
 import 'board_state.dart';
 import 'card.dart';
@@ -50,7 +51,17 @@ class GameState {
     }
   }
 
-  void onTap(Card card, [int count = 1]) {
+  int tapCount(Card card) {
+    for (int col = 0; col < 8; col++) {
+      final stack = board.tableau[col];
+      final i = findIndex(stack, (c) => c == card);
+      if (i != null) return stack.length - i;
+    }
+    return 1;
+  }
+
+  void onTap(Card card) {
+    final count = tapCount(card);
     if (count > 1) {
       final updateGame = board.moveCards(card, count);
       if (updateGame != null) {
