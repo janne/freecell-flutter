@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart' show Color, Colors;
 
+import 'components/button.dart';
 import 'state/board_state.dart';
 import 'state/card.dart';
 import 'utils/lists.dart';
@@ -15,6 +16,7 @@ class FreecellGame extends FlameGame {
   final gameState = GameState();
 
   static const double padding = 4;
+  static const double toolbarHeight = 64;
 
   get width => (size.x - padding * 9) / 8;
 
@@ -23,11 +25,11 @@ class FreecellGame extends FlameGame {
   @override
   Color backgroundColor() => Colors.green;
 
-  Vector2 tableauPos(int column, int row) => Vector2(padding + (width + padding) * column, height + padding * 2 + row * height / 2);
+  Vector2 tableauPos(int column, int row) => Vector2(padding + (width + padding) * column, toolbarHeight + height + padding * 2 + row * height / 2);
 
-  Vector2 freeCellPos(int column) => Vector2(padding + (width + padding / 2) * column, padding);
+  Vector2 freeCellPos(int column) => Vector2(padding + (width + padding / 2) * column, padding + toolbarHeight);
 
-  Vector2 homeCellPos(int column) => Vector2(padding * 6.5 + width * 4 + (width + padding / 2) * column, padding);
+  Vector2 homeCellPos(int column) => Vector2(padding * 6.5 + width * 4 + (width + padding / 2) * column, padding + toolbarHeight);
 
   @override
   Future<void> onLoad() async {
@@ -46,6 +48,40 @@ class FreecellGame extends FlameGame {
     });
     await Future.delayed(const Duration(milliseconds: 500));
     animateUndoStates(0);
+    add(Button(
+        position: Vector2(padding, padding),
+        icon: "prev",
+        onTap: () {
+          print("Prev");
+        }));
+    add(Button(
+        position: Vector2(padding + 78, padding),
+        icon: "restart",
+        onTap: () {
+          print("Restart");
+        }));
+    add(Button(
+        position: Vector2(padding + 78 * 2, padding),
+        icon: "next",
+        onTap: () {
+          print("Next");
+        }));
+    add(Button(
+        position: Vector2(padding + 78 * 3, padding),
+        icon: "undo",
+        onTap: () {
+          if (gameState.undoIndex == 0) return;
+          gameState.undo();
+          moveDiff(gameState.undoStates[gameState.undoIndex + 1], gameState.board);
+        }));
+    add(Button(
+        position: Vector2(padding + 78 * 4, padding),
+        icon: "redo",
+        onTap: () {
+          if (gameState.undoIndex == gameState.undoStates.length - 1) return;
+          gameState.redo();
+          moveDiff(gameState.undoStates[gameState.undoIndex - 1], gameState.board);
+        }));
   }
 
   void handleTap(Card card) {
