@@ -51,7 +51,7 @@ class FreecellGame extends FlameGame {
       final board = gameState.undoStates[i + 1];
       final prevBoard = gameState.undoStates[i];
       moveDiff(prevBoard, board);
-      await Future.delayed(const Duration(milliseconds: 400));
+      await Future.delayed(const Duration(milliseconds: 200));
     }
   }
 
