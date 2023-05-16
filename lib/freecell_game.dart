@@ -13,9 +13,9 @@ class FreecellGame extends FlameGame {
 
   final gameState = GameState();
 
-  static const double padding = 10;
+  static const double padding = 4;
 
-  get width => size.x / 10;
+  get width => (size.x - padding * 9) / 8;
 
   get height => width * 1.6;
 
