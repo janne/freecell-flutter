@@ -5,5 +5,9 @@ import 'freecell_game.dart';
 
 void main() {
   final game = FreecellGame();
-  runApp(GameWidget(game: game));
+  runApp(
+    SafeArea(
+      child: GameWidget(game: game),
+    ),
+  );
 }
