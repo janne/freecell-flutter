@@ -40,7 +40,7 @@ class FreecellGame extends FlameGame {
         );
       });
     });
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 200));
     _animateUndoStates(0);
     add(Button(position: Vector2(padding, padding), icon: "prev", onTap: _prev));
     add(Button(position: Vector2(padding + 78, padding), icon: "restart", onTap: _restart));
