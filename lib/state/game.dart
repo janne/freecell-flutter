@@ -1,41 +1,56 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart' show immutable;
+
 import '../utils/lists.dart';
 import 'board.dart';
 import 'card.dart';
 
+@immutable
 class Game {
   final int _seed;
-  List<Board> boards = [];
-  int currentBoardIndex = -1;
+  final List<Board> _boards;
+  final int _boardIndex;
 
-  Game([int? seed]) : _seed = seed ?? Random().nextInt(1000000) {
-    addBoard(Board.withSeed(_seed));
-  }
+  const Game({required List<Board> boards, required int boardIndex, required int seed})
+      : _boards = boards,
+        _boardIndex = boardIndex,
+        _seed = seed;
+
+  Game copyWith({List<Board>? boards, int? boardIndex, int? seed}) => Game(
+        boards: boards ?? _boards,
+        boardIndex: boardIndex ?? _boardIndex,
+        seed: seed ?? _seed,
+      );
+
+  static Game withSeed(int seed) => Game(boards: const [], boardIndex: -1, seed: seed).addBoard(Board.withSeed(seed));
+
+  static Game random() => withSeed(Random().nextInt(1000000));
 
   int get seed => _seed;
 
-  Board get board => boards[currentBoardIndex];
+  int get boardIndex => _boardIndex;
 
-  void addBoard(Board board, [skipAutoMove = false]) {
-    boards = [...boards.getRange(0, currentBoardIndex + 1), board];
-    currentBoardIndex = boards.length - 1;
-    if (!skipAutoMove) _autoMove();
+  Board get board => boards[_boardIndex];
+
+  List<Board> get boards => _boards;
+
+  Game addBoard(Board board, [skipAutoMove = false]) {
+    final game = copyWith(
+      boards: [...boards.getRange(0, _boardIndex + 1), board],
+      boardIndex: _boardIndex + 1,
+    );
+    if (!skipAutoMove) return game.autoMove();
+    return game;
   }
 
-  void restart() {
-    currentBoardIndex = 0;
-  }
+  Game restart() => copyWith(boardIndex: 0);
 
-  void undo() {
-    currentBoardIndex--;
-  }
+  Game undo() => copyWith(boardIndex: _boardIndex - 1);
 
-  void redo() {
-    currentBoardIndex++;
-  }
+  Game redo() => copyWith(boardIndex: _boardIndex + 1);
 
-  void _autoMove() {
+  Game autoMove() {
     final cardsToTest = <Card>[
       ...(board.freeCells.where((cell) => cell != null)).cast<Card>(),
       ...board.tableau.where((stack) => stack.isNotEmpty).map((stack) => stack.last)
@@ -44,10 +59,10 @@ class Game {
       final updateGame = board.moveCardToHomeCell(card);
       if (updateGame != null) {
         final updatedBoard = updateGame(board.removeCard(card));
-        addBoard(updatedBoard);
-        break;
+        return addBoard(updatedBoard);
       }
     }
+    return this;
   }
 
   int tapCount(Card card) {
@@ -59,20 +74,25 @@ class Game {
     return 1;
   }
 
-  void onTap(Card card) {
+  Game onTap(Card card) {
     final count = tapCount(card);
     if (count > 1) {
       final updateGame = board.moveCards(card, count);
       if (updateGame != null) {
-        addBoard(updateGame(board));
+        return addBoard(updateGame(board));
       }
-      return;
+      return this;
     }
 
     final updateGame = board.moveCard(card);
     if (updateGame != null) {
       final skipAutoMove = board.homeCells.any((cell) => cell.any((c) => c == card));
-      addBoard(updateGame(board.removeCard(card)), skipAutoMove);
+      return addBoard(updateGame(board.removeCard(card)), skipAutoMove);
     }
+    return this;
   }
+
+  Game next() => Game.withSeed(_seed + 1);
+
+  Game previous() => Game.withSeed(_seed - 1);
 }

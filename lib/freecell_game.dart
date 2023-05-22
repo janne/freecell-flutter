@@ -17,7 +17,7 @@ final textRenderer = TextPaint(style: TextStyle(color: BasicPalette.white.color,
 class FreecellGame extends FlameGame {
   int _prio = 0;
 
-  Game gameState = Game();
+  Game gameState = Game.random();
 
   static const double padding = 4;
   static const double toolbarHeight = 64;
@@ -67,7 +67,7 @@ class FreecellGame extends FlameGame {
   _prev() {
     if (PlayingCard.animating) return;
     final prevBoard = gameState.board;
-    gameState = Game(gameState.seed - 1);
+    gameState = gameState.previous();
     _moveDiff(prevBoard, gameState.board);
     gameNumber.text = "#${gameState.seed}";
   }
@@ -75,38 +75,38 @@ class FreecellGame extends FlameGame {
   _next() {
     if (PlayingCard.animating) return;
     final prevBoard = gameState.board;
-    gameState = Game(gameState.seed + 1);
+    gameState = gameState.next();
     _moveDiff(prevBoard, gameState.board);
     gameNumber.text = "#${gameState.seed}";
   }
 
   _undo() {
-    if (gameState.currentBoardIndex == 0 || PlayingCard.animating) return;
-    gameState.undo();
-    _moveDiff(gameState.boards[gameState.currentBoardIndex + 1], gameState.board);
+    if (gameState.boardIndex == 0 || PlayingCard.animating) return;
+    gameState = gameState.undo();
+    _moveDiff(gameState.boards[gameState.boardIndex + 1], gameState.board);
   }
 
   _redo() {
-    if (gameState.currentBoardIndex == gameState.boards.length - 1 || PlayingCard.animating) return;
-    gameState.redo();
-    _moveDiff(gameState.boards[gameState.currentBoardIndex - 1], gameState.board);
+    if (gameState.boardIndex == gameState.boards.length - 1 || PlayingCard.animating) return;
+    gameState = gameState.redo();
+    _moveDiff(gameState.boards[gameState.boardIndex - 1], gameState.board);
   }
 
   _restart() {
-    if (gameState.currentBoardIndex == 0) return;
-    final prevUndoIndex = gameState.currentBoardIndex;
-    gameState.currentBoardIndex = 0;
+    if (gameState.boardIndex == 0) return;
+    final prevUndoIndex = gameState.boardIndex;
+    gameState = gameState.restart();
     _moveDiff(gameState.boards[prevUndoIndex], gameState.board);
   }
 
   void _handleTap(Card card) {
-    final startIndex = gameState.currentBoardIndex;
-    gameState.onTap(card);
+    final startIndex = gameState.boardIndex;
+    gameState = gameState.onTap(card);
     _animateUndoStates(startIndex);
   }
 
   Future<void> _animateUndoStates(int startIndex) async {
-    for (int i = startIndex; i < gameState.currentBoardIndex; i++) {
+    for (int i = startIndex; i < gameState.boardIndex; i++) {
       final board = gameState.boards[i + 1];
       final prevBoard = gameState.boards[i];
       _moveDiff(prevBoard, board);
