@@ -1,23 +1,23 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
-
 import '../utils/lists.dart';
 import 'board_state.dart';
 import 'card.dart';
 
 class GameState {
-  int seed = Random().nextInt(1000000);
-  late BoardState board;
+  final int _seed;
   List<BoardState> undoStates = [];
   int undoIndex = -1;
 
-  GameState() {
-    board = BoardState.withSeed(seed);
-    addUndoState();
+  GameState([int? seed]) : _seed = seed ?? Random().nextInt(1000000) {
+    addUndoState(BoardState.withSeed(_seed));
   }
 
-  void addUndoState([skipAutoMove = false]) {
+  int get seed => _seed;
+
+  BoardState get board => undoStates[undoIndex];
+
+  void addUndoState(BoardState board, [skipAutoMove = false]) {
     undoStates = [...undoStates.getRange(0, undoIndex + 1), board];
     undoIndex = undoStates.length - 1;
     if (!skipAutoMove) _autoMove();
@@ -25,17 +25,14 @@ class GameState {
 
   void restart() {
     undoIndex = 0;
-    board = undoStates[undoIndex];
   }
 
   void undo() {
     undoIndex -= 1;
-    board = undoStates[undoIndex];
   }
 
   void redo() {
     undoIndex += 1;
-    board = undoStates[undoIndex];
   }
 
   void _autoMove() {
@@ -46,8 +43,8 @@ class GameState {
     for (final card in cardsToTest) {
       final updateGame = board.moveCardToHomeCell(card);
       if (updateGame != null) {
-        board = updateGame(board.removeCard(card));
-        addUndoState();
+        final updatedBoard = updateGame(board.removeCard(card));
+        addUndoState(updatedBoard);
         break;
       }
     }
@@ -67,8 +64,7 @@ class GameState {
     if (count > 1) {
       final updateGame = board.moveCards(card, count);
       if (updateGame != null) {
-        board = updateGame(board);
-        addUndoState();
+        addUndoState(updateGame(board));
       }
       return;
     }
@@ -76,22 +72,7 @@ class GameState {
     final updateGame = board.moveCard(card);
     if (updateGame != null) {
       final skipAutoMove = board.homeCells.any((cell) => cell.any((c) => c == card));
-      board = updateGame(board.removeCard(card));
-      addUndoState(skipAutoMove);
+      addUndoState(updateGame(board.removeCard(card)), skipAutoMove);
     }
   }
-
-  void changeSeed(String value) {
-    try {
-      board = BoardState.withSeed(int.parse(value).clamp(0, 1000000));
-    } catch (e) {
-      if (kDebugMode) {
-        print("Format exception: $value");
-      }
-    }
-  }
-
-  void prevGame() {}
-
-  void nextGame() {}
 }

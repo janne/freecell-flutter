@@ -17,7 +17,7 @@ final textRenderer = TextPaint(style: TextStyle(color: BasicPalette.white.color,
 class FreecellGame extends FlameGame {
   int prio = 0;
 
-  final gameState = GameState();
+  GameState gameState = GameState();
 
   static const double padding = 4;
   static const double toolbarHeight = 64;
@@ -26,13 +26,14 @@ class FreecellGame extends FlameGame {
 
   get height => width * 1.6;
 
+  late TextComponent gameNumber;
+
   @override
   Color backgroundColor() => Colors.green;
 
   @override
   Future<void> onLoad() async {
-    final board = gameState.undoStates[0];
-    board.tableau.asMap().forEach((x, cards) {
+    gameState.board.tableau.asMap().forEach((x, cards) {
       cards.asMap().forEach((y, card) {
         add(
           PlayingCard(
@@ -49,7 +50,7 @@ class FreecellGame extends FlameGame {
     add(Button(position: Vector2(padding + 78 * 2, padding), icon: "next", onTap: _next));
     add(Button(position: Vector2(padding + 78 * 3, padding), icon: "undo", onTap: _undo));
     add(Button(position: Vector2(padding + 78 * 4, padding), icon: "redo", onTap: _redo));
-    final gameNumber = TextComponent(text: "#${gameState.seed}", textRenderer: textRenderer);
+    gameNumber = TextComponent(text: "#${gameState.seed}", textRenderer: textRenderer);
     gameNumber.position = Vector2(size.x - gameNumber.size.x - 8, size.y - 20);
     add(gameNumber);
 
@@ -64,15 +65,19 @@ class FreecellGame extends FlameGame {
   Vector2 _homeCellPos(int column) => Vector2(padding * 6.5 + width * 4 + (width + padding / 2) * column, padding + toolbarHeight);
 
   _prev() {
+    if (PlayingCard.animating) return;
     final prevBoard = gameState.board;
-    gameState.prevGame();
+    gameState = GameState(gameState.seed - 1);
     _moveDiff(prevBoard, gameState.board);
+    gameNumber.text = "#${gameState.seed}";
   }
 
   _next() {
+    if (PlayingCard.animating) return;
     final prevBoard = gameState.board;
-    gameState.nextGame();
+    gameState = GameState(gameState.seed + 1);
     _moveDiff(prevBoard, gameState.board);
+    gameNumber.text = "#${gameState.seed}";
   }
 
   _undo() {
@@ -91,7 +96,6 @@ class FreecellGame extends FlameGame {
     if (gameState.undoIndex == 0) return;
     final prevUndoIndex = gameState.undoIndex;
     gameState.undoIndex = 0;
-    gameState.board = gameState.undoStates[0];
     _moveDiff(gameState.undoStates[prevUndoIndex], gameState.board);
   }
 
