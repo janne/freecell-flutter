@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-import 'package:flutter/material.dart' show Color, Colors;
+import 'package:flame/palette.dart';
+import 'package:flutter/material.dart' show Color, Colors, TextStyle;
 
 import 'components/button.dart';
 import 'state/board_state.dart';
@@ -9,6 +11,8 @@ import 'state/card.dart';
 import 'utils/lists.dart';
 import 'components/playing_card.dart';
 import 'state/game_state.dart';
+
+final textRenderer = TextPaint(style: TextStyle(color: BasicPalette.white.color, fontSize: 12));
 
 class FreecellGame extends FlameGame {
   int prio = 0;
@@ -40,13 +44,17 @@ class FreecellGame extends FlameGame {
         );
       });
     });
-    await Future.delayed(const Duration(milliseconds: 300));
-    _animateUndoStates(0);
     add(Button(position: Vector2(padding, padding), icon: "prev", onTap: _prev));
     add(Button(position: Vector2(padding + 78, padding), icon: "restart", onTap: _restart));
     add(Button(position: Vector2(padding + 78 * 2, padding), icon: "next", onTap: _next));
     add(Button(position: Vector2(padding + 78 * 3, padding), icon: "undo", onTap: _undo));
     add(Button(position: Vector2(padding + 78 * 4, padding), icon: "redo", onTap: _redo));
+    final gameNumber = TextComponent(text: "#${gameState.seed}", textRenderer: textRenderer);
+    gameNumber.position = Vector2(size.x - gameNumber.size.x - 8, size.y - 20);
+    add(gameNumber);
+
+    await Future.delayed(const Duration(milliseconds: 300));
+    _animateUndoStates(0);
   }
 
   Vector2 _tableauPos(int column, int row) => Vector2(padding + (width + padding) * column, toolbarHeight + height + padding * 2 + row * height / 2);
