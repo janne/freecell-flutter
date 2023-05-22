@@ -40,7 +40,7 @@ class FreecellGame extends FlameGame {
         );
       });
     });
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(const Duration(milliseconds: 300));
     _animateUndoStates(0);
     add(Button(position: Vector2(padding, padding), icon: "prev", onTap: _prev));
     add(Button(position: Vector2(padding + 78, padding), icon: "restart", onTap: _restart));
@@ -98,7 +98,7 @@ class FreecellGame extends FlameGame {
       final board = gameState.undoStates[i + 1];
       final prevBoard = gameState.undoStates[i];
       _moveDiff(prevBoard, board);
-      await Future.delayed(const Duration(milliseconds: 200));
+      await Future.delayed(const Duration(milliseconds: 300));
     }
   }
 

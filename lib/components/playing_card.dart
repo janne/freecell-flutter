@@ -33,7 +33,7 @@ class PlayingCard extends SvgComponent with TapCallbacks, DragCallbacks {
     moving++;
     add(MoveToEffect(
       position,
-      EffectController(duration: 0.5, curve: Curves.easeInOut),
+      EffectController(duration: 0.3, curve: Curves.easeInOut),
       onComplete: () => moving--,
     ));
   }
