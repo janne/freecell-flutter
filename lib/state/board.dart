@@ -8,12 +8,11 @@ typedef BoardFn = Board Function(Board);
 
 @immutable
 class Board {
-  final int seed;
   final List<Card?> freeCells;
   final List<List<Card>> homeCells;
   final List<List<Card>> tableau;
 
-  const Board({required this.seed, required this.freeCells, required this.homeCells, required this.tableau});
+  const Board({required this.freeCells, required this.homeCells, required this.tableau});
 
   factory Board.withSeed(int seed) {
     final List<Card?> freeCells = List.generate(4, (_) => null);
@@ -22,7 +21,7 @@ class Board {
       tableau[entry.key % 8].add(entry.value);
     }
     final homeCells = List.generate(4, (_) => <Card>[]);
-    return Board(seed: seed, freeCells: freeCells, tableau: tableau, homeCells: homeCells);
+    return Board(freeCells: freeCells, tableau: tableau, homeCells: homeCells);
   }
 
   Board copyWith({
@@ -32,7 +31,6 @@ class Board {
     List<Card?>? freeCells,
   }) =>
       Board(
-        seed: seed ?? this.seed,
         freeCells: freeCells ?? this.freeCells,
         homeCells: homeCells ?? this.homeCells,
         tableau: tableau ?? this.tableau,

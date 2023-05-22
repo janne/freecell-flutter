@@ -23,9 +23,9 @@ class Game {
         seed: seed ?? _seed,
       );
 
-  static Game withSeed(int seed) => Game(boards: const [], boardIndex: -1, seed: seed).addBoard(Board.withSeed(seed));
+  factory Game.withSeed(int seed) => Game(boards: const [], boardIndex: -1, seed: seed).addBoard(Board.withSeed(seed));
 
-  static Game random() => withSeed(Random().nextInt(1000000));
+  factory Game.random() => Game.withSeed(Random().nextInt(1000000));
 
   int get seed => _seed;
 
@@ -84,10 +84,10 @@ class Game {
       return this;
     }
 
-    final updateGame = board.moveCard(card);
-    if (updateGame != null) {
+    final updateBoard = board.moveCard(card);
+    if (updateBoard != null) {
       final skipAutoMove = board.homeCells.any((cell) => cell.any((c) => c == card));
-      return addBoard(updateGame(board.removeCard(card)), skipAutoMove);
+      return addBoard(updateBoard(board.removeCard(card)), skipAutoMove);
     }
     return this;
   }
