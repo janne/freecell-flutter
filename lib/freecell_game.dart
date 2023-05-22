@@ -56,14 +56,12 @@ class FreecellGame extends FlameGame {
   Vector2 _homeCellPos(int column) => Vector2(padding * 6.5 + width * 4 + (width + padding / 2) * column, padding + toolbarHeight);
 
   _prev() {
-    print("Prev");
     final prevBoard = gameState.board;
     gameState.prevGame();
     _moveDiff(prevBoard, gameState.board);
   }
 
   _next() {
-    print("Next");
     final prevBoard = gameState.board;
     gameState.nextGame();
     _moveDiff(prevBoard, gameState.board);
