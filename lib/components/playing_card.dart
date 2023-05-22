@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 class PlayingCard extends SvgComponent with TapCallbacks, DragCallbacks {
   final String rankSuite;
   final void Function() _onTap;
+  static int moving = 0;
 
   PlayingCard({required Vector2 position, required this.rankSuite, required Vector2 size, required void Function() onTap})
       : _onTap = onTap,
@@ -23,11 +24,17 @@ class PlayingCard extends SvgComponent with TapCallbacks, DragCallbacks {
   }
 
   @override
-  void onTapUp(TapUpEvent event) {
+  void onTapDown(TapDownEvent event) {
+    if (moving > 0) return;
     _onTap();
   }
 
   void moveTo(Vector2 position) {
-    add(MoveEffect.to(position, EffectController(duration: 0.5, curve: Curves.easeInOut)));
+    moving++;
+    add(MoveToEffect(
+      position,
+      EffectController(duration: 0.5, curve: Curves.easeInOut),
+      onComplete: () => moving--,
+    ));
   }
 }
