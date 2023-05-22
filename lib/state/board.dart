@@ -4,41 +4,41 @@ import 'card.dart';
 import 'deck.dart';
 import '../utils/lists.dart';
 
-typedef BoardFn = BoardState Function(BoardState);
+typedef BoardFn = Board Function(Board);
 
 @immutable
-class BoardState {
+class Board {
   final int seed;
   final List<Card?> freeCells;
   final List<List<Card>> homeCells;
   final List<List<Card>> tableau;
 
-  const BoardState({required this.seed, required this.freeCells, required this.homeCells, required this.tableau});
+  const Board({required this.seed, required this.freeCells, required this.homeCells, required this.tableau});
 
-  factory BoardState.withSeed(int seed) {
+  factory Board.withSeed(int seed) {
     final List<Card?> freeCells = List.generate(4, (_) => null);
     final tableau = List.generate(8, (_) => <Card>[]);
     for (final entry in Deck.shuffled(seed).cards.asMap().entries) {
       tableau[entry.key % 8].add(entry.value);
     }
     final homeCells = List.generate(4, (_) => <Card>[]);
-    return BoardState(seed: seed, freeCells: freeCells, tableau: tableau, homeCells: homeCells);
+    return Board(seed: seed, freeCells: freeCells, tableau: tableau, homeCells: homeCells);
   }
 
-  BoardState copyWith({
+  Board copyWith({
     int? seed,
     List<List<Card>>? tableau,
     List<List<Card>>? homeCells,
     List<Card?>? freeCells,
   }) =>
-      BoardState(
+      Board(
         seed: seed ?? this.seed,
         freeCells: freeCells ?? this.freeCells,
         homeCells: homeCells ?? this.homeCells,
         tableau: tableau ?? this.tableau,
       );
 
-  BoardState removeCard(Card card) => copyWith(
+  Board removeCard(Card card) => copyWith(
         tableau: tableau.map((stack) => stack.where((c) => c != card).toList()).toList(),
         homeCells: homeCells.map((stack) => stack.where((c) => c != card).toList()).toList(),
         freeCells: freeCells.map((c) => c == card ? null : c).toList(),
@@ -48,7 +48,7 @@ class BoardState {
     if (card.rank == "A") {
       final index = findIndex(homeCells, (column) => column.isEmpty);
       if (index != null) {
-        return (BoardState board) => board.copyWith(homeCells: pushToIndex(board.homeCells, card, index));
+        return (Board board) => board.copyWith(homeCells: pushToIndex(board.homeCells, card, index));
       }
     }
 
@@ -57,7 +57,7 @@ class BoardState {
       return column.last.suit == card.suit && column.last.nextRank == card.rank;
     });
     if (index != null) {
-      return (BoardState board) => board.copyWith(homeCells: pushToIndex(board.homeCells, card, index));
+      return (Board board) => board.copyWith(homeCells: pushToIndex(board.homeCells, card, index));
     }
 
     return null;
@@ -70,12 +70,12 @@ class BoardState {
       return lastCard.isBlack != card.isBlack && lastCard.rank == card.nextRank;
     });
     if (index != null) {
-      return (BoardState board) => board.copyWith(tableau: pushToIndex(board.tableau, card, index));
+      return (Board board) => board.copyWith(tableau: pushToIndex(board.tableau, card, index));
     }
 
     final indexEmpty = findIndex(tableau, (column) => column.isEmpty);
     if (indexEmpty != null) {
-      return (BoardState board) => board.copyWith(tableau: pushToIndex(board.tableau, card, indexEmpty));
+      return (Board board) => board.copyWith(tableau: pushToIndex(board.tableau, card, indexEmpty));
     }
 
     return null;
@@ -85,7 +85,7 @@ class BoardState {
     final index = findIndex(freeCells, (cell) => cell == null);
 
     if (index != null) {
-      return (BoardState board) => board.copyWith(freeCells: setAtIndex(board.freeCells, card, index));
+      return (Board board) => board.copyWith(freeCells: setAtIndex(board.freeCells, card, index));
     }
     return null;
   }
@@ -115,7 +115,7 @@ class BoardState {
     });
 
     if (i != null) {
-      return (BoardState board) {
+      return (Board board) {
         final cards = board.tableau[column].getRange(index, index + count).toList();
         final tableau = cards.fold(board.tableau, (memo, card) => pushToIndex(memo, card, i));
         final tableauMinusCard = deleteFromIndex(tableau, column, index);
@@ -127,7 +127,7 @@ class BoardState {
 
     final j = findIndex(tableau, (column) => column.isEmpty);
     if (j != null) {
-      return (BoardState board) {
+      return (Board board) {
         final cards = board.tableau[column].getRange(index, index + count).toList();
         final tableau = cards.fold(board.tableau, (memo, card) => pushToIndex(memo, card, j));
         return board.copyWith(tableau: deleteFromIndex(tableau, column, index));

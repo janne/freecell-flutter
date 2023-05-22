@@ -1,23 +1,23 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
-import 'package:flame/game.dart';
+import 'package:flame/game.dart' show FlameGame;
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart' show Color, Colors, TextStyle;
 
 import 'components/button.dart';
-import 'state/board_state.dart';
+import 'state/board.dart';
 import 'state/card.dart';
 import 'utils/lists.dart';
 import 'components/playing_card.dart';
-import 'state/game_state.dart';
+import 'state/game.dart';
 
 final textRenderer = TextPaint(style: TextStyle(color: BasicPalette.white.color, fontSize: 12));
 
 class FreecellGame extends FlameGame {
-  int prio = 0;
+  int _prio = 0;
 
-  GameState gameState = GameState();
+  Game gameState = Game();
 
   static const double padding = 4;
   static const double toolbarHeight = 64;
@@ -33,7 +33,7 @@ class FreecellGame extends FlameGame {
 
   @override
   Future<void> onLoad() async {
-    gameState.board.tableau.asMap().forEach((x, cards) {
+    gameState.boards[0].tableau.asMap().forEach((x, cards) {
       cards.asMap().forEach((y, card) {
         add(
           PlayingCard(
@@ -54,7 +54,7 @@ class FreecellGame extends FlameGame {
     gameNumber.position = Vector2(size.x - gameNumber.size.x - 8, size.y - 20);
     add(gameNumber);
 
-    await Future.delayed(const Duration(milliseconds: 300));
+    await Future.delayed(const Duration(milliseconds: 500));
     _animateUndoStates(0);
   }
 
@@ -67,7 +67,7 @@ class FreecellGame extends FlameGame {
   _prev() {
     if (PlayingCard.animating) return;
     final prevBoard = gameState.board;
-    gameState = GameState(gameState.seed - 1);
+    gameState = Game(gameState.seed - 1);
     _moveDiff(prevBoard, gameState.board);
     gameNumber.text = "#${gameState.seed}";
   }
@@ -75,40 +75,40 @@ class FreecellGame extends FlameGame {
   _next() {
     if (PlayingCard.animating) return;
     final prevBoard = gameState.board;
-    gameState = GameState(gameState.seed + 1);
+    gameState = Game(gameState.seed + 1);
     _moveDiff(prevBoard, gameState.board);
     gameNumber.text = "#${gameState.seed}";
   }
 
   _undo() {
-    if (gameState.undoIndex == 0 || PlayingCard.animating) return;
+    if (gameState.currentBoardIndex == 0 || PlayingCard.animating) return;
     gameState.undo();
-    _moveDiff(gameState.undoStates[gameState.undoIndex + 1], gameState.board);
+    _moveDiff(gameState.boards[gameState.currentBoardIndex + 1], gameState.board);
   }
 
   _redo() {
-    if (gameState.undoIndex == gameState.undoStates.length - 1 || PlayingCard.animating) return;
+    if (gameState.currentBoardIndex == gameState.boards.length - 1 || PlayingCard.animating) return;
     gameState.redo();
-    _moveDiff(gameState.undoStates[gameState.undoIndex - 1], gameState.board);
+    _moveDiff(gameState.boards[gameState.currentBoardIndex - 1], gameState.board);
   }
 
   _restart() {
-    if (gameState.undoIndex == 0) return;
-    final prevUndoIndex = gameState.undoIndex;
-    gameState.undoIndex = 0;
-    _moveDiff(gameState.undoStates[prevUndoIndex], gameState.board);
+    if (gameState.currentBoardIndex == 0) return;
+    final prevUndoIndex = gameState.currentBoardIndex;
+    gameState.currentBoardIndex = 0;
+    _moveDiff(gameState.boards[prevUndoIndex], gameState.board);
   }
 
   void _handleTap(Card card) {
-    final startIndex = gameState.undoIndex;
+    final startIndex = gameState.currentBoardIndex;
     gameState.onTap(card);
     _animateUndoStates(startIndex);
   }
 
   Future<void> _animateUndoStates(int startIndex) async {
-    for (int i = startIndex; i < gameState.undoIndex; i++) {
-      final board = gameState.undoStates[i + 1];
-      final prevBoard = gameState.undoStates[i];
+    for (int i = startIndex; i < gameState.currentBoardIndex; i++) {
+      final board = gameState.boards[i + 1];
+      final prevBoard = gameState.boards[i];
       _moveDiff(prevBoard, board);
       await Future.delayed(const Duration(milliseconds: 300));
     }
@@ -131,7 +131,7 @@ class FreecellGame extends FlameGame {
     return Vector2(0, 0);
   }
 
-  void _moveDiff(BoardState prevBoard, BoardState board) {
+  void _moveDiff(Board prevBoard, Board board) {
     // Freecells
     for (int col = 0; col < 4; col++) {
       final card = board.freeCells[col];
@@ -160,15 +160,7 @@ class FreecellGame extends FlameGame {
   void _animateCard(Card card) {
     final playingCard = children.whereType<PlayingCard>().firstWhere((c) => c.toString() == card.toString());
     final Vector2 pos = _findCard(card);
-    playingCard.priority = ++prio;
+    playingCard.priority = ++_prio;
     playingCard.moveTo(pos);
   }
 }
-
-// IconButton(icon: const Icon(Icons.autorenew), tooltip: "New game", onPressed: _newGame),
-// TextField(
-//   controller: TextEditingController()..text = board.seed.toString(),
-//   decoration: const InputDecoration(border: UnderlineInputBorder(), prefixText: "#"),
-//   keyboardType: TextInputType.number,
-//   onSubmitted: _onChangeSeed,
-// ),

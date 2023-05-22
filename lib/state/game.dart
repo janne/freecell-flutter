@@ -1,38 +1,38 @@
 import 'dart:math';
 
 import '../utils/lists.dart';
-import 'board_state.dart';
+import 'board.dart';
 import 'card.dart';
 
-class GameState {
+class Game {
   final int _seed;
-  List<BoardState> undoStates = [];
-  int undoIndex = -1;
+  List<Board> boards = [];
+  int currentBoardIndex = -1;
 
-  GameState([int? seed]) : _seed = seed ?? Random().nextInt(1000000) {
-    addUndoState(BoardState.withSeed(_seed));
+  Game([int? seed]) : _seed = seed ?? Random().nextInt(1000000) {
+    addBoard(Board.withSeed(_seed));
   }
 
   int get seed => _seed;
 
-  BoardState get board => undoStates[undoIndex];
+  Board get board => boards[currentBoardIndex];
 
-  void addUndoState(BoardState board, [skipAutoMove = false]) {
-    undoStates = [...undoStates.getRange(0, undoIndex + 1), board];
-    undoIndex = undoStates.length - 1;
+  void addBoard(Board board, [skipAutoMove = false]) {
+    boards = [...boards.getRange(0, currentBoardIndex + 1), board];
+    currentBoardIndex = boards.length - 1;
     if (!skipAutoMove) _autoMove();
   }
 
   void restart() {
-    undoIndex = 0;
+    currentBoardIndex = 0;
   }
 
   void undo() {
-    undoIndex -= 1;
+    currentBoardIndex--;
   }
 
   void redo() {
-    undoIndex += 1;
+    currentBoardIndex++;
   }
 
   void _autoMove() {
@@ -44,7 +44,7 @@ class GameState {
       final updateGame = board.moveCardToHomeCell(card);
       if (updateGame != null) {
         final updatedBoard = updateGame(board.removeCard(card));
-        addUndoState(updatedBoard);
+        addBoard(updatedBoard);
         break;
       }
     }
@@ -64,7 +64,7 @@ class GameState {
     if (count > 1) {
       final updateGame = board.moveCards(card, count);
       if (updateGame != null) {
-        addUndoState(updateGame(board));
+        addBoard(updateGame(board));
       }
       return;
     }
@@ -72,7 +72,7 @@ class GameState {
     final updateGame = board.moveCard(card);
     if (updateGame != null) {
       final skipAutoMove = board.homeCells.any((cell) => cell.any((c) => c == card));
-      addUndoState(updateGame(board.removeCard(card)), skipAutoMove);
+      addBoard(updateGame(board.removeCard(card)), skipAutoMove);
     }
   }
 }
