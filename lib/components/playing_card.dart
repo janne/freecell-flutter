@@ -23,9 +23,11 @@ class PlayingCard extends SvgComponent with TapCallbacks, DragCallbacks {
     svg = await Svg.load('images/cards/$rankSuite.svg');
   }
 
+  static bool get animating => moving > 0;
+
   @override
   void onTapDown(TapDownEvent event) {
-    if (moving > 0) return;
+    if (animating) return;
     _onTap();
   }
 

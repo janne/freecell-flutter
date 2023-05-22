@@ -68,13 +68,13 @@ class FreecellGame extends FlameGame {
   }
 
   _undo() {
-    if (gameState.undoIndex == 0) return;
+    if (gameState.undoIndex == 0 || PlayingCard.animating) return;
     gameState.undo();
     _moveDiff(gameState.undoStates[gameState.undoIndex + 1], gameState.board);
   }
 
   _redo() {
-    if (gameState.undoIndex == gameState.undoStates.length - 1) return;
+    if (gameState.undoIndex == gameState.undoStates.length - 1 || PlayingCard.animating) return;
     gameState.redo();
     _moveDiff(gameState.undoStates[gameState.undoIndex - 1], gameState.board);
   }
