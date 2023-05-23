@@ -135,24 +135,20 @@ class FreecellGame extends FlameGame {
     // Freecells
     for (int col = 0; col < 4; col++) {
       final card = board.freeCells[col];
-      if (card != null && card != prevBoard.freeCells[col]) {
+      if (card != null) {
         _animateCard(card);
       }
     }
     // Homecells
     for (int col = 0; col < 4; col++) {
       board.homeCells[col].asMap().forEach((i, card) {
-        if (card != prevBoard.homeCells[col].elementAtOrNull(i)) {
-          _animateCard(card);
-        }
+        _animateCard(card);
       });
     }
     // Tableau
     for (int col = 0; col < 8; col++) {
       board.tableau[col].asMap().forEach((i, card) {
-        if (card != prevBoard.tableau[col].elementAtOrNull(i)) {
-          _animateCard(card);
-        }
+        _animateCard(card);
       });
     }
   }
