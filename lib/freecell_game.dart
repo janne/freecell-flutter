@@ -68,7 +68,7 @@ class FreecellGame extends FlameGame {
     if (PlayingCard.animating) return;
     final prevBoard = gameState.board;
     gameState = gameState.previous();
-    _moveDiff(prevBoard, gameState.board);
+    _moveDiff(prevBoard, gameState.board, animateAll: true);
     gameNumber.text = "#${gameState.seed}";
   }
 
@@ -76,7 +76,7 @@ class FreecellGame extends FlameGame {
     if (PlayingCard.animating) return;
     final prevBoard = gameState.board;
     gameState = gameState.next();
-    _moveDiff(prevBoard, gameState.board);
+    _moveDiff(prevBoard, gameState.board, animateAll: true);
     gameNumber.text = "#${gameState.seed}";
   }
 
@@ -131,24 +131,28 @@ class FreecellGame extends FlameGame {
     return Vector2(0, 0);
   }
 
-  void _moveDiff(Board prevBoard, Board board) {
+  void _moveDiff(Board prevBoard, Board board, {animateAll = false}) {
     // Freecells
     for (int col = 0; col < 4; col++) {
       final card = board.freeCells[col];
-      if (card != null) {
+      if (card != null && (card != prevBoard.freeCells[col] || animateAll)) {
         _animateCard(card);
       }
     }
     // Homecells
     for (int col = 0; col < 4; col++) {
       board.homeCells[col].asMap().forEach((i, card) {
-        _animateCard(card);
+        if (card != prevBoard.homeCells[col].elementAtOrNull(i) || animateAll) {
+          _animateCard(card);
+        }
       });
     }
     // Tableau
     for (int col = 0; col < 8; col++) {
       board.tableau[col].asMap().forEach((i, card) {
-        _animateCard(card);
+        if (card != prevBoard.tableau[col].elementAtOrNull(i) || animateAll) {
+          _animateCard(card);
+        }
       });
     }
   }
