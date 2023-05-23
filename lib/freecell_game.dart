@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/game.dart' show FlameGame;
@@ -22,7 +23,9 @@ class FreecellGame extends FlameGame {
   static const double padding = 4;
   static const double toolbarHeight = 64;
 
-  get width => (size.x - padding * 9) / 8;
+  double get maxWidth => (size.x - padding * 9) / 8;
+
+  get width => min(maxWidth, 60);
 
   get height => width * 1.6;
 
