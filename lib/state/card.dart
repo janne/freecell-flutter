@@ -45,4 +45,10 @@ class Card {
 
   @override
   String toString() => "$rank$suit";
+
+  @override
+  bool operator ==(other) => other is Card && _rank == other._rank && _suit == other._suit;
+
+  @override
+  int get hashCode => _rank.hashCode ^ _suit.hashCode;
 }
