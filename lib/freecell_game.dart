@@ -5,6 +5,7 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart' show FlameGame;
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart' show Color, Colors, TextStyle;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'components/button.dart';
 import 'state/board.dart';
@@ -18,7 +19,7 @@ final textRenderer = TextPaint(style: TextStyle(color: BasicPalette.white.color,
 class FreecellGame extends FlameGame {
   int _prio = 0;
 
-  Game game = Game.random();
+  late Game game;
 
   static const double padding = 4;
   static const double toolbarHeight = 64;
@@ -36,6 +37,7 @@ class FreecellGame extends FlameGame {
 
   @override
   Future<void> onLoad() async {
+    game = await getLastGame();
     game.boards[0].tableau.asMap().forEach((x, cards) {
       cards.asMap().forEach((y, card) {
         add(
@@ -61,6 +63,21 @@ class FreecellGame extends FlameGame {
     _animateUndoStates(0);
   }
 
+  Future<void> setLastGame(Game game) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('lastGame', game.seed);
+  }
+
+  Future<Game> getLastGame() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final seed = prefs.getInt('lastGame');
+    if (seed != null) return Game.withSeed(seed);
+
+    final game = Game.random();
+    setLastGame(game);
+    return game;
+  }
+
   Vector2 _tableauPos(int column, int row) => Vector2(padding + (width + padding) * column, toolbarHeight + height + padding * 2 + row * height / 2);
 
   Vector2 _freeCellPos(int column) => Vector2(padding + (width + padding / 2) * column, padding + toolbarHeight);
@@ -73,6 +90,7 @@ class FreecellGame extends FlameGame {
     game = game.previous();
     _moveDiff(prevBoard, game.board, animateAll: true);
     gameNumber.text = "#${game.seed}";
+    setLastGame(game);
   }
 
   _next() {
@@ -81,6 +99,7 @@ class FreecellGame extends FlameGame {
     game = game.next();
     _moveDiff(prevBoard, game.board, animateAll: true);
     gameNumber.text = "#${game.seed}";
+    setLastGame(game);
   }
 
   _undo() {
