@@ -18,7 +18,7 @@ final textRenderer = TextPaint(style: TextStyle(color: BasicPalette.white.color,
 class FreecellGame extends FlameGame {
   int _prio = 0;
 
-  Game gameState = Game.random();
+  Game game = Game.random();
 
   static const double padding = 4;
   static const double toolbarHeight = 64;
@@ -36,7 +36,7 @@ class FreecellGame extends FlameGame {
 
   @override
   Future<void> onLoad() async {
-    gameState.boards[0].tableau.asMap().forEach((x, cards) {
+    game.boards[0].tableau.asMap().forEach((x, cards) {
       cards.asMap().forEach((y, card) {
         add(
           PlayingCard(
@@ -53,7 +53,7 @@ class FreecellGame extends FlameGame {
     add(Button(position: Vector2(padding + 78 * 2, padding), icon: "next", onTap: _next));
     add(Button(position: Vector2(padding + 78 * 3, padding), icon: "undo", onTap: _undo));
     add(Button(position: Vector2(padding + 78 * 4, padding), icon: "redo", onTap: _redo));
-    gameNumber = TextComponent(text: "#${gameState.seed}", textRenderer: textRenderer);
+    gameNumber = TextComponent(text: "#${game.seed}", textRenderer: textRenderer);
     gameNumber.position = Vector2(size.x - gameNumber.size.x - 8, size.y - 20);
     add(gameNumber);
 
@@ -69,49 +69,49 @@ class FreecellGame extends FlameGame {
 
   _prev() {
     if (PlayingCard.animating) return;
-    final prevBoard = gameState.board;
-    gameState = gameState.previous();
-    _moveDiff(prevBoard, gameState.board, animateAll: true);
-    gameNumber.text = "#${gameState.seed}";
+    final prevBoard = game.board;
+    game = game.previous();
+    _moveDiff(prevBoard, game.board, animateAll: true);
+    gameNumber.text = "#${game.seed}";
   }
 
   _next() {
     if (PlayingCard.animating) return;
-    final prevBoard = gameState.board;
-    gameState = gameState.next();
-    _moveDiff(prevBoard, gameState.board, animateAll: true);
-    gameNumber.text = "#${gameState.seed}";
+    final prevBoard = game.board;
+    game = game.next();
+    _moveDiff(prevBoard, game.board, animateAll: true);
+    gameNumber.text = "#${game.seed}";
   }
 
   _undo() {
-    if (gameState.boardIndex == 0 || PlayingCard.animating) return;
-    gameState = gameState.undo();
-    _moveDiff(gameState.boards[gameState.boardIndex + 1], gameState.board);
+    if (game.boardIndex == 0 || PlayingCard.animating) return;
+    game = game.undo();
+    _moveDiff(game.boards[game.boardIndex + 1], game.board);
   }
 
   _redo() {
-    if (gameState.boardIndex == gameState.boards.length - 1 || PlayingCard.animating) return;
-    gameState = gameState.redo();
-    _moveDiff(gameState.boards[gameState.boardIndex - 1], gameState.board);
+    if (game.boardIndex == game.boards.length - 1 || PlayingCard.animating) return;
+    game = game.redo();
+    _moveDiff(game.boards[game.boardIndex - 1], game.board);
   }
 
   _restart() {
-    if (gameState.boardIndex == 0) return;
-    final prevUndoIndex = gameState.boardIndex;
-    gameState = gameState.restart();
-    _moveDiff(gameState.boards[prevUndoIndex], gameState.board);
+    if (game.boardIndex == 0) return;
+    final prevUndoIndex = game.boardIndex;
+    game = game.restart();
+    _moveDiff(game.boards[prevUndoIndex], game.board);
   }
 
   void _handleTap(Card card) {
-    final startIndex = gameState.boardIndex;
-    gameState = gameState.onTap(card);
+    final startIndex = game.boardIndex;
+    game = game.onTap(card);
     _animateUndoStates(startIndex);
   }
 
   Future<void> _animateUndoStates(int startIndex) async {
-    for (int i = startIndex; i < gameState.boardIndex; i++) {
-      final board = gameState.boards[i + 1];
-      final prevBoard = gameState.boards[i];
+    for (int i = startIndex; i < game.boardIndex; i++) {
+      final board = game.boards[i + 1];
+      final prevBoard = game.boards[i];
       _moveDiff(prevBoard, board);
       await Future.delayed(const Duration(milliseconds: 300));
     }
@@ -119,16 +119,16 @@ class FreecellGame extends FlameGame {
 
   Vector2 _findCard(Card card) {
     // Freecells
-    final freecell = findIndex(gameState.board.freeCells, (c) => card == c);
+    final freecell = findIndex(game.board.freeCells, (c) => card == c);
     if (freecell != null) return _freeCellPos(freecell);
     // Homecells
     for (int i = 0; i < 4; i++) {
-      final homecell = findIndex(gameState.board.homeCells[i], (c) => card == c);
+      final homecell = findIndex(game.board.homeCells[i], (c) => card == c);
       if (homecell != null) return _homeCellPos(i);
     }
     // Tableau
     for (int i = 0; i < 8; i++) {
-      final tab = findIndex(gameState.board.tableau[i], (c) => card == c);
+      final tab = findIndex(game.board.tableau[i], (c) => card == c);
       if (tab != null) return _tableauPos(i, tab);
     }
     return Vector2(0, 0);
