@@ -71,9 +71,7 @@ class FreecellGame extends FlameGame {
   Future<Game> getLastGame() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final seed = prefs.getInt('lastGame');
-    if (seed != null) return Game.withSeed(seed);
-
-    final game = Game.random();
+    final game = Game.withSeed(seed ?? 1);
     setLastGame(game);
     return game;
   }
