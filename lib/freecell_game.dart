@@ -116,7 +116,7 @@ class FreecellGame extends FlameGame {
     if (game.boardIndex == 0) return;
     final prevUndoIndex = game.boardIndex;
     game = game.restart();
-    _moveDiff(game.boards[prevUndoIndex], game.board);
+    _moveDiff(game.boards[prevUndoIndex], game.board, animateAll: true);
   }
 
   void _handleTap(Card card) {
