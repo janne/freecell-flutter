@@ -1,43 +1,26 @@
-import 'package:flutter/widgets.dart';
-
 import 'card.dart';
 import '../utils/generator.dart';
 
-@immutable
-class Deck {
-  final List<Card> cards;
+typedef Deck = List<Card>;
 
-  const Deck(this.cards);
+Deck _createDeck() => List.generate(13, (i) => i + 1)
+    .map(
+      (rank) => Suit.values.map(
+        (suit) => (rank: rank, suit: suit),
+      ),
+    )
+    .expand((v) => v)
+    .toList();
 
-  factory Deck.full() {
-    return Deck(List.generate(13, (i) => i + 1)
-        .map(
-          (rank) => Suit.values.map(
-            (suit) => (rank: rank, suit: suit),
-          ),
-        )
-        .expand((v) => v)
-        .toList());
+Deck createShuffledDeck(int seed) {
+  final generator = Generator(seed);
+  final from = List.from(_createDeck(), growable: true);
+  final Deck shuffledDeck = [];
+
+  while (from.isNotEmpty) {
+    final index = generator.next() % from.length;
+    shuffledDeck.add(from.removeAt(index));
+    if (index < from.length - 1) from.insert(index, from.removeLast());
   }
-
-  Deck shuffle(int seed) {
-    final generator = Generator(seed);
-    final from = List.from(cards, growable: true);
-    final List<Card> shuffledDeck = [];
-
-    while (from.isNotEmpty) {
-      final index = generator.next() % from.length;
-      shuffledDeck.add(from.removeAt(index));
-      if (index < from.length - 1) from.insert(index, from.removeLast());
-    }
-    return Deck(shuffledDeck);
-  }
-
-  @override
-  String toString() {
-    final cardList = cards.map((card) => cardToString(card)).join(", ");
-    return "[$cardList]";
-  }
-
-  factory Deck.shuffled(int seed) => Deck.full().shuffle(seed);
+  return shuffledDeck;
 }

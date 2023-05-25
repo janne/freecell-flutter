@@ -17,7 +17,7 @@ class Board {
   factory Board.withSeed(int seed) {
     final List<Card?> freeCells = List.generate(4, (_) => null);
     final tableau = List.generate(8, (_) => <Card>[]);
-    for (final entry in Deck.shuffled(seed).cards.asMap().entries) {
+    for (final entry in createShuffledDeck(seed).asMap().entries) {
       tableau[entry.key % 8].add(entry.value);
     }
     final homeCells = List.generate(4, (_) => <Card>[]);
