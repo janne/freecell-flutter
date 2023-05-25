@@ -42,7 +42,7 @@ class FreecellGame extends FlameGame {
       cards.asMap().forEach((y, card) {
         add(
           PlayingCard(
-            rankSuite: card.toString(),
+            rankSuite: cardToString(card),
             position: _tableauPos(x, y),
             size: Vector2(width, width * 1.6),
             onTap: () => _handleTap(card),
@@ -178,7 +178,7 @@ class FreecellGame extends FlameGame {
   }
 
   void _animateCard(Card card) {
-    final playingCard = children.whereType<PlayingCard>().firstWhere((c) => c.toString() == card.toString());
+    final playingCard = children.whereType<PlayingCard>().firstWhere((c) => c.toString() == cardToString(card));
     final Vector2 pos = _findCard(card);
     playingCard.priority = ++_prio;
     playingCard.moveTo(pos);

@@ -43,7 +43,7 @@ class Board {
       );
 
   BoardFn? moveCardToHomeCell(Card card) {
-    if (card.rank == "A") {
+    if (card.rank == 1) {
       final index = findIndex(homeCells, (column) => column.isEmpty);
       if (index != null) {
         return (Board board) => board.copyWith(homeCells: pushToIndex(board.homeCells, card, index));
@@ -52,7 +52,7 @@ class Board {
 
     final index = findIndex(homeCells, (column) {
       if (column.isEmpty) return false;
-      return column.last.suit == card.suit && column.last.nextRank == card.rank;
+      return followingCards(card, column.last);
     });
     if (index != null) {
       return (Board board) => board.copyWith(homeCells: pushToIndex(board.homeCells, card, index));
@@ -64,8 +64,7 @@ class Board {
   BoardFn? moveCardToTableau(Card card) {
     final index = findIndex(tableau, (column) {
       if (column.isEmpty) return false;
-      final lastCard = column.last;
-      return lastCard.isBlack != card.isBlack && lastCard.rank == card.nextRank;
+      return alternatingCards(card, column.last);
     });
     if (index != null) {
       return (Board board) => board.copyWith(tableau: pushToIndex(board.tableau, card, index));
@@ -103,13 +102,12 @@ class Board {
     final cards = tableau[column].getRange(index, index + count).toList();
 
     for (var i = 1; i < cards.length; i++) {
-      if (cards[i].isBlack == cards[i - 1].isBlack) return null;
-      if (cards[i].nextRank != cards[i - 1].rank) return null;
+      if (!alternatingCards(cards[i], cards[i - 1])) return null;
     }
 
     final i = findIndex(tableau, (column) {
       if (column.isEmpty) return false;
-      return column.last.isBlack != card.isBlack && column.last.rank == card.nextRank;
+      return alternatingCards(card, column.last);
     });
 
     if (i != null) {

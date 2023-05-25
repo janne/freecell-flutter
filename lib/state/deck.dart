@@ -13,7 +13,7 @@ class Deck {
     return Deck(List.generate(13, (i) => i + 1)
         .map(
           (rank) => Suit.values.map(
-            (suit) => Card(rank, suit),
+            (suit) => (rank: rank, suit: suit),
           ),
         )
         .expand((v) => v)
@@ -35,7 +35,7 @@ class Deck {
 
   @override
   String toString() {
-    final cardList = cards.map((card) => card.toString()).join(", ");
+    final cardList = cards.map((card) => cardToString(card)).join(", ");
     return "[$cardList]";
   }
 

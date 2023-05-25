@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
-
 enum Suit { clubs, diamonds, hearts, spades }
+
+typedef Card = ({int rank, Suit suit});
 
 String _rankToString(int rank) {
   switch (rank) {
@@ -17,38 +17,25 @@ String _rankToString(int rank) {
   }
 }
 
-@immutable
-class Card {
-  final int _rank;
-  final Suit _suit;
-
-  const Card(this._rank, this._suit);
-
-  String get suit {
-    switch (_suit) {
-      case Suit.clubs:
-        return "C";
-      case Suit.diamonds:
-        return "D";
-      case Suit.hearts:
-        return "H";
-      case Suit.spades:
-        return "S";
-    }
+String _suitToString(Suit suit) {
+  switch (suit) {
+    case (Suit.clubs):
+      return "C";
+    case (Suit.diamonds):
+      return "D";
+    case (Suit.hearts):
+      return "H";
+    case (Suit.spades):
+      return "S";
   }
-
-  get isBlack => _suit == Suit.clubs || _suit == Suit.spades;
-
-  String get rank => _rankToString(_rank);
-
-  String get nextRank => _rankToString(_rank + 1);
-
-  @override
-  String toString() => "$rank$suit";
-
-  @override
-  bool operator ==(other) => other is Card && _rank == other._rank && _suit == other._suit;
-
-  @override
-  int get hashCode => _rank.hashCode ^ _suit.hashCode;
 }
+
+String cardToString(Card card) => "${_rankToString(card.rank)}${_suitToString(card.suit)}";
+
+bool _isBlack(Card card) => card.suit == Suit.clubs || card.suit == Suit.spades;
+
+bool _consecutiveCards(Card first, Card second) => first.rank + 1 == second.rank;
+
+bool followingCards(Card first, Card second) => _consecutiveCards(first, second) && first.suit == second.suit;
+
+bool alternatingCards(Card first, Card second) => _consecutiveCards(first, second) && _isBlack(first) != _isBlack(second);
