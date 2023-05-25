@@ -3,14 +3,13 @@ import '../utils/generator.dart';
 
 typedef Deck = List<Card>;
 
-Deck _createDeck() => List.generate(13, (i) => i + 1)
+Iterable<Card> _createDeck() => List.generate(13, (i) => i + 1)
     .map(
       (rank) => Suit.values.map(
         (suit) => (rank: rank, suit: suit),
       ),
     )
-    .expand((v) => v)
-    .toList();
+    .expand((v) => v);
 
 Deck createShuffledDeck(int seed) {
   final generator = Generator(seed);
@@ -22,5 +21,5 @@ Deck createShuffledDeck(int seed) {
     shuffledDeck.add(from.removeAt(index));
     if (index < from.length - 1) from.insert(index, from.removeLast());
   }
-  return shuffledDeck;
+  return List.unmodifiable(shuffledDeck);
 }
