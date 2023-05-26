@@ -52,7 +52,7 @@ class Board {
 
     final index = findIndex(homeCells, (column) {
       if (column.isEmpty) return false;
-      return followingCards(card, column.last);
+      return followingCards(column.last, card);
     });
     if (index != null) {
       return (Board board) => board.copyWith(homeCells: pushToIndex(board.homeCells, card, index));
