@@ -3,18 +3,16 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/game.dart' show FlameGame;
-import 'package:flame/palette.dart';
-import 'package:flutter/material.dart' show Color, Colors, TextStyle;
+import 'package:flutter/material.dart' show Color, Colors;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'components/button.dart';
+import 'components/game_number.dart';
 import 'state/board.dart';
 import 'state/card.dart';
 import 'utils/lists.dart';
 import 'components/playing_card.dart';
 import 'state/game.dart';
-
-final textRenderer = TextPaint(style: TextStyle(color: BasicPalette.white.color, fontSize: 12));
 
 class FreecellGame extends FlameGame {
   int _prio = 0;
@@ -57,8 +55,8 @@ class FreecellGame extends FlameGame {
     add(Button(position: Vector2(paddingLeft + 78 * 2, gap), icon: "next", onTap: _next));
     add(Button(position: Vector2(paddingLeft + 78 * 3, gap), icon: "undo", onTap: _undo));
     add(Button(position: Vector2(paddingLeft + 78 * 4, gap), icon: "redo", onTap: _redo));
-    gameNumber = TextComponent(text: "#${game.seed}", textRenderer: textRenderer);
-    gameNumber.position = Vector2(size.x - gameNumber.size.x - 8, size.y - 20);
+    gameNumber = GameNumber(game.seed);
+    gameNumber.position = Vector2(size.x - gameNumber.width - gap, size.y - gameNumber.height - gap);
     add(gameNumber);
 
     await Future.delayed(const Duration(milliseconds: 500));
@@ -91,7 +89,7 @@ class FreecellGame extends FlameGame {
     game = game.previous();
     _moveDiff(prevBoard, game.board, animateAll: true);
     gameNumber.text = "#${game.seed}";
-    gameNumber.position = Vector2(size.x - gameNumber.size.x - 8, size.y - 20);
+    gameNumber.position = Vector2(size.x - gameNumber.width - gap, size.y - gameNumber.height - gap);
     setLastGame(game);
   }
 
@@ -101,7 +99,7 @@ class FreecellGame extends FlameGame {
     game = game.next();
     _moveDiff(prevBoard, game.board, animateAll: true);
     gameNumber.text = "#${game.seed}";
-    gameNumber.position = Vector2(size.x - gameNumber.size.x - 8, size.y - 20);
+    gameNumber.position = Vector2(size.x - gameNumber.width - gap, size.y - gameNumber.height - gap);
     setLastGame(game);
   }
 
