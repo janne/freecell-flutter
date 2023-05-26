@@ -21,14 +21,16 @@ class FreecellGame extends FlameGame {
 
   late Game game;
 
-  static const double padding = 4;
+  static const double gap = 4;
   static const double toolbarHeight = 64;
 
-  double get maxWidth => (size.x - padding * 9) / 8;
+  double get maxWidth => (size.x - gap * 9) / 8;
 
-  get width => min(maxWidth, 60);
+  double get cardWidth => min(maxWidth, 60);
 
-  get height => width * 1.6;
+  double get cardHeight => cardWidth * 1.6;
+
+  get paddingLeft => size.x / 2 - (cardWidth + gap) * 4 + gap / 2;
 
   late TextComponent gameNumber;
 
@@ -38,23 +40,23 @@ class FreecellGame extends FlameGame {
   @override
   Future<void> onLoad() async {
     game = await getLastGame();
-    game.boards[0].tableau.asMap().forEach((x, cards) {
-      cards.asMap().forEach((y, card) {
+    game.boards[0].tableau.asMap().forEach((col, cards) {
+      cards.asMap().forEach((row, card) {
         add(
           PlayingCard(
             rankSuite: cardToString(card),
-            position: _tableauPos(x, y),
-            size: Vector2(width, width * 1.6),
+            position: _tableauPos(col, row),
+            size: Vector2(cardWidth, cardWidth * 1.6),
             onTap: () => _handleTap(card),
           ),
         );
       });
     });
-    add(Button(position: Vector2(padding, padding), icon: "prev", onTap: _prev));
-    add(Button(position: Vector2(padding + 78, padding), icon: "restart", onTap: _restart));
-    add(Button(position: Vector2(padding + 78 * 2, padding), icon: "next", onTap: _next));
-    add(Button(position: Vector2(padding + 78 * 3, padding), icon: "undo", onTap: _undo));
-    add(Button(position: Vector2(padding + 78 * 4, padding), icon: "redo", onTap: _redo));
+    add(Button(position: Vector2(paddingLeft, gap), icon: "prev", onTap: _prev));
+    add(Button(position: Vector2(paddingLeft + 78, gap), icon: "restart", onTap: _restart));
+    add(Button(position: Vector2(paddingLeft + 78 * 2, gap), icon: "next", onTap: _next));
+    add(Button(position: Vector2(paddingLeft + 78 * 3, gap), icon: "undo", onTap: _undo));
+    add(Button(position: Vector2(paddingLeft + 78 * 4, gap), icon: "redo", onTap: _redo));
     gameNumber = TextComponent(text: "#${game.seed}", textRenderer: textRenderer);
     gameNumber.position = Vector2(size.x - gameNumber.size.x - 8, size.y - 20);
     add(gameNumber);
@@ -76,11 +78,12 @@ class FreecellGame extends FlameGame {
     return game;
   }
 
-  Vector2 _tableauPos(int column, int row) => Vector2(padding + (width + padding) * column, toolbarHeight + height + padding * 2 + row * height / 2);
+  Vector2 _tableauPos(int col, int row) =>
+      Vector2(paddingLeft + (cardWidth + gap) * col, toolbarHeight + cardHeight + gap * 2 + row * cardHeight / 2);
 
-  Vector2 _freeCellPos(int column) => Vector2(padding + (width + padding / 2) * column, padding + toolbarHeight);
+  Vector2 _freeCellPos(int column) => Vector2(paddingLeft + (cardWidth + gap / 2) * column, gap + toolbarHeight);
 
-  Vector2 _homeCellPos(int column) => Vector2(padding * 6.5 + width * 4 + (width + padding / 2) * column, padding + toolbarHeight);
+  Vector2 _homeCellPos(int column) => Vector2(paddingLeft + gap * 5.5 + cardWidth * 4 + (cardWidth + gap / 2) * column, gap + toolbarHeight);
 
   _prev() {
     if (PlayingCard.animating) return;
