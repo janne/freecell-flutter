@@ -137,20 +137,23 @@ class FreecellGame extends FlameGame {
     }
   }
 
-  Vector2 _findCard(Card card) {
+  Vector2 _findCard(Card card, Board board) {
     // Freecells
-    final freecell = findIndex(game.board.freeCells, (c) => card == c);
+    final freecell = findIndex(board.freeCells, (c) => card == c);
     if (freecell != null) return _freeCellPos(freecell);
+
     // Homecells
     for (int i = 0; i < 4; i++) {
-      final homecell = findIndex(game.board.homeCells[i], (c) => card == c);
+      final homecell = findIndex(board.homeCells[i], (c) => card == c);
       if (homecell != null) return _homeCellPos(i);
     }
+
     // Tableau
     for (int i = 0; i < 8; i++) {
-      final tab = findIndex(game.board.tableau[i], (c) => card == c);
+      final tab = findIndex(board.tableau[i], (c) => card == c);
       if (tab != null) return _tableauPos(i, tab);
     }
+
     return Vector2(0, 0);
   }
 
@@ -159,30 +162,32 @@ class FreecellGame extends FlameGame {
     for (int col = 0; col < 4; col++) {
       final card = board.freeCells[col];
       if (card != null && (card != prevBoard.freeCells[col] || animateAll)) {
-        _animateCard(card);
+        _animateCard(card, board);
       }
     }
+
     // Homecells
     for (int col = 0; col < 4; col++) {
       board.homeCells[col].asMap().forEach((i, card) {
         if (card != prevBoard.homeCells[col].elementAtOrNull(i) || animateAll) {
-          _animateCard(card);
+          _animateCard(card, board);
         }
       });
     }
+
     // Tableau
     for (int col = 0; col < 8; col++) {
       board.tableau[col].asMap().forEach((i, card) {
         if (card != prevBoard.tableau[col].elementAtOrNull(i) || animateAll) {
-          _animateCard(card);
+          _animateCard(card, board);
         }
       });
     }
   }
 
-  void _animateCard(Card card) {
+  void _animateCard(Card card, Board board) {
     final playingCard = children.whereType<PlayingCard>().firstWhere((c) => c.toString() == cardToString(card));
-    final Vector2 pos = _findCard(card);
+    final Vector2 pos = _findCard(card, board);
     playingCard.priority = ++_prio;
     playingCard.moveTo(pos);
   }
