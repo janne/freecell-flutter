@@ -92,7 +92,7 @@ class Game {
     return this;
   }
 
-  Game next() => Game.withSeed(_seed + 1);
+  Game next() => Game.withSeed(_seed + 1 > 1000000 ? 1 : _seed + 1);
 
-  Game previous() => Game.withSeed(_seed - 1);
+  Game previous() => Game.withSeed(_seed - 1 < 1 ? 1000000 : _seed - 1);
 }

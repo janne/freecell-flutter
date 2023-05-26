@@ -91,6 +91,7 @@ class FreecellGame extends FlameGame {
     game = game.previous();
     _moveDiff(prevBoard, game.board, animateAll: true);
     gameNumber.text = "#${game.seed}";
+    gameNumber.position = Vector2(size.x - gameNumber.size.x - 8, size.y - 20);
     setLastGame(game);
   }
 
@@ -100,6 +101,7 @@ class FreecellGame extends FlameGame {
     game = game.next();
     _moveDiff(prevBoard, game.board, animateAll: true);
     gameNumber.text = "#${game.seed}";
+    gameNumber.position = Vector2(size.x - gameNumber.size.x - 8, size.y - 20);
     setLastGame(game);
   }
 
