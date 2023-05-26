@@ -55,7 +55,9 @@ class FreecellGame extends FlameGame {
     add(Button(position: Vector2(paddingLeft + 78 * 2, gap), icon: "next", onTap: _next));
     add(Button(position: Vector2(paddingLeft + 78 * 3, gap), icon: "undo", onTap: _undo));
     add(Button(position: Vector2(paddingLeft + 78 * 4, gap), icon: "redo", onTap: _redo));
-    gameNumber = GameNumber(game.seed);
+    gameNumber = GameNumber(game.seed, () {
+      overlays.add("seedPicker");
+    });
     gameNumber.position = Vector2(size.x - gameNumber.width - gap, size.y - gameNumber.height - gap);
     add(gameNumber);
 
