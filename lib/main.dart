@@ -1,21 +1,11 @@
-import 'package:flame/game.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
-import 'freecell_game.dart';
-import 'overlays/seed_picker.dart';
+import 'widgets/freecell_game.dart';
+
+typedef Vector2 = (double, double);
 
 void main() {
-  final game = FreecellGame();
   runApp(
-    SafeArea(
-      child: GameWidget(
-        game: game,
-        overlayBuilderMap: {
-          'seedPicker': (BuildContext context, FreecellGame game) {
-            return SeedPicker();
-          },
-        },
-      ),
-    ),
+    const MaterialApp(home: FreecellGame()),
   );
 }
