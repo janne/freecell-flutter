@@ -12,7 +12,7 @@ void main() {
         game: game,
         overlayBuilderMap: {
           'seedPicker': (BuildContext context, FreecellGame game) {
-            return SeedPicker();
+            return const SeedPicker();
           },
         },
       ),
