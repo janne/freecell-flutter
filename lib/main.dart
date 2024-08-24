@@ -8,6 +8,7 @@ void main() {
   final game = FreecellGame();
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: SafeArea(
         child: GameWidget(
           game: game,

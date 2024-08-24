@@ -33,11 +33,16 @@ class _SeedPickerState extends State<SeedPicker> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.black.withOpacity(0.7),
       body: Center(
         child: Container(
           padding: const EdgeInsets.all(20),
-          color: Colors.white,
+          margin: const EdgeInsets.all(40),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.black, width: 1),
+            color: Colors.white,
+          ),
           child: Column(
             mainAxisSize:
                 MainAxisSize.min, // Prevent column from taking full height
