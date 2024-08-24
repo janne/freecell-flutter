@@ -50,15 +50,29 @@ class FreecellGame extends FlameGame {
         );
       });
     });
-    add(Button(position: Vector2(paddingLeft, gap), icon: "prev", onTap: _prev));
-    add(Button(position: Vector2(paddingLeft + 78, gap), icon: "restart", onTap: _restart));
-    add(Button(position: Vector2(paddingLeft + 78 * 2, gap), icon: "next", onTap: _next));
-    add(Button(position: Vector2(paddingLeft + 78 * 3, gap), icon: "undo", onTap: _undo));
-    add(Button(position: Vector2(paddingLeft + 78 * 4, gap), icon: "redo", onTap: _redo));
+    add(Button(
+        position: Vector2(paddingLeft, gap), icon: "prev", onTap: _prev));
+    add(Button(
+        position: Vector2(paddingLeft + 78, gap),
+        icon: "restart",
+        onTap: _restart));
+    add(Button(
+        position: Vector2(paddingLeft + 78 * 2, gap),
+        icon: "next",
+        onTap: _next));
+    add(Button(
+        position: Vector2(paddingLeft + 78 * 3, gap),
+        icon: "undo",
+        onTap: _undo));
+    add(Button(
+        position: Vector2(paddingLeft + 78 * 4, gap),
+        icon: "redo",
+        onTap: _redo));
     gameNumber = GameNumber(game.seed, () {
       overlays.add("seedPicker");
     });
-    gameNumber.position = Vector2(size.x - gameNumber.width - gap, size.y - gameNumber.height - gap);
+    gameNumber.position = Vector2(
+        size.x - gameNumber.width - gap, size.y - gameNumber.height - gap);
     add(gameNumber);
 
     await Future.delayed(const Duration(milliseconds: 500));
@@ -78,12 +92,16 @@ class FreecellGame extends FlameGame {
     return game;
   }
 
-  Vector2 _tableauPos(int col, int row) =>
-      Vector2(paddingLeft + (cardWidth + gap) * col, toolbarHeight + cardHeight + gap * 2 + row * cardHeight / 2);
+  Vector2 _tableauPos(int col, int row) => Vector2(
+      paddingLeft + (cardWidth + gap) * col,
+      toolbarHeight + cardHeight + gap * 2 + row * cardHeight / 2);
 
-  Vector2 _freeCellPos(int column) => Vector2(paddingLeft + (cardWidth + gap / 2) * column, gap + toolbarHeight);
+  Vector2 _freeCellPos(int column) => Vector2(
+      paddingLeft + (cardWidth + gap / 2) * column, gap + toolbarHeight);
 
-  Vector2 _homeCellPos(int column) => Vector2(paddingLeft + gap * 5.5 + cardWidth * 4 + (cardWidth + gap / 2) * column, gap + toolbarHeight);
+  Vector2 _homeCellPos(int column) => Vector2(
+      paddingLeft + gap * 5.5 + cardWidth * 4 + (cardWidth + gap / 2) * column,
+      gap + toolbarHeight);
 
   _prev() {
     if (PlayingCard.animating) return;
@@ -91,7 +109,8 @@ class FreecellGame extends FlameGame {
     game = game.previous();
     _moveDiff(prevBoard, game.board, animateAll: true);
     gameNumber.text = "#${game.seed}";
-    gameNumber.position = Vector2(size.x - gameNumber.width - gap, size.y - gameNumber.height - gap);
+    gameNumber.position = Vector2(
+        size.x - gameNumber.width - gap, size.y - gameNumber.height - gap);
     setLastGame(game);
   }
 
@@ -101,7 +120,18 @@ class FreecellGame extends FlameGame {
     game = game.next();
     _moveDiff(prevBoard, game.board, animateAll: true);
     gameNumber.text = "#${game.seed}";
-    gameNumber.position = Vector2(size.x - gameNumber.width - gap, size.y - gameNumber.height - gap);
+    gameNumber.position = Vector2(
+        size.x - gameNumber.width - gap, size.y - gameNumber.height - gap);
+    setLastGame(game);
+  }
+
+  setGameSeed(int seed) {
+    final prevBoard = game.board;
+    game = Game.withSeed(seed);
+    _moveDiff(prevBoard, game.board, animateAll: true);
+    gameNumber.text = "#${game.seed}";
+    gameNumber.position = Vector2(
+        size.x - gameNumber.width - gap, size.y - gameNumber.height - gap);
     setLastGame(game);
   }
 
@@ -112,7 +142,8 @@ class FreecellGame extends FlameGame {
   }
 
   _redo() {
-    if (game.boardIndex == game.boards.length - 1 || PlayingCard.animating) return;
+    if (game.boardIndex == game.boards.length - 1 || PlayingCard.animating)
+      return;
     game = game.redo();
     _moveDiff(game.boards[game.boardIndex - 1], game.board);
   }
@@ -188,7 +219,9 @@ class FreecellGame extends FlameGame {
   }
 
   void _animateCard(Card card, Board board) {
-    final playingCard = children.whereType<PlayingCard>().firstWhere((c) => c.toString() == cardToString(card));
+    final playingCard = children
+        .whereType<PlayingCard>()
+        .firstWhere((c) => c.toString() == cardToString(card));
     final Vector2 pos = _findCard(card, board);
     playingCard.priority = ++_prio;
     playingCard.moveTo(pos);
