@@ -142,8 +142,9 @@ class FreecellGame extends FlameGame {
   }
 
   _redo() {
-    if (game.boardIndex == game.boards.length - 1 || PlayingCard.animating)
+    if (game.boardIndex == game.boards.length - 1 || PlayingCard.animating) {
       return;
+    }
     game = game.redo();
     _moveDiff(game.boards[game.boardIndex - 1], game.board);
   }
