@@ -1,7 +1,6 @@
 name: freecell
 description: Flutter Freecell
 version: 1.0.0
-publish_to: "none"
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -9,8 +8,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flame: ^1.7.3
-  flame_svg: ^1.7.3
+  flame: ^1.18.0
+  flame_svg: ^1.10.2
   shared_preferences: ^2.1.1
 
 dev_dependencies:
