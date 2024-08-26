@@ -8,7 +8,7 @@ class GameNumber extends TextComponent with TapCallbacks {
   final void Function() onTap;
 
   GameNumber(int number, this.onTap) : _number = number {
-    textRenderer = TextPaint(style: TextStyle(color: BasicPalette.white.color, fontSize: 12));
+    textRenderer = TextPaint(style: TextStyle(color: BasicPalette.white.color, fontSize: 24, fontWeight: FontWeight.bold));
     text = "#$_number";
   }
 

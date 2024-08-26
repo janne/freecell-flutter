@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:freecell/freecell_game.dart';
 
 class SeedPicker extends StatefulWidget {
-  final FreecellGame game; // Add game instance as a parameter
+  final FreecellGame game;
   const SeedPicker({super.key, required this.game});
   @override
   State<SeedPicker> createState() => _SeedPickerState();
 }
 
 class _SeedPickerState extends State<SeedPicker> {
-  int _enteredSeed = 1; // Store the entered seed value
+  late int _enteredSeed;
   late FocusNode _focusNode;
 
   @override
   void initState() {
     _focusNode = FocusNode();
     _focusNode.requestFocus();
+    _enteredSeed = widget.game.game.seed;
     super.initState();
   }
 
@@ -32,6 +33,7 @@ class _SeedPickerState extends State<SeedPicker> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       backgroundColor: Colors.black.withOpacity(0.7),
       body: Center(
@@ -44,13 +46,15 @@ class _SeedPickerState extends State<SeedPicker> {
             color: Colors.white,
           ),
           child: Column(
-            mainAxisSize:
-                MainAxisSize.min, // Prevent column from taking full height
+            mainAxisSize: MainAxisSize.min, // Prevent column from taking full height
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextField(
-                decoration: const InputDecoration(
-                  hintText: 'Game number',
-                ),
+              Text(
+                "Game number",
+                style: textTheme.titleMedium,
+              ),
+              TextFormField(
+                initialValue: widget.game.game.seed.toString(),
                 focusNode: _focusNode,
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
@@ -58,7 +62,7 @@ class _SeedPickerState extends State<SeedPicker> {
                     _enteredSeed = int.tryParse(value) ?? 1;
                   });
                 },
-                onSubmitted: (_) => _submit(),
+                onFieldSubmitted: (_) => _submit(),
               ),
               const SizedBox(height: 30),
               Row(
